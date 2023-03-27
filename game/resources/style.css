@@ -1,0 +1,25 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.board {
+
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    width: 50px;
+    height: 50px;
+}
+
+.white {
+    background: antiquewhite;
+}
+
+.black {
+    background: #333333;
+}
