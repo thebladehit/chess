@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,17 @@
   "bugs": {
     "url": "https://github.com/BoqdanY/chest/issues"
   },
-  "homepage": "https://github.com/BoqdanY/chest#readme"
+  "homepage": "https://github.com/BoqdanY/chest#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22"
+  },
+  "imports": {
+    "#app/*": {
+      "default": "./app/*"
+    },
+    "#game/*": {
+      "default": "./game/*"
+    }
+  }
 }
