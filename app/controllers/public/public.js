@@ -1,17 +1,23 @@
 import fs from 'fs';
 
+const types = {
+  js: {'Content-Type': 'text/javascript'},
+  css: {'Content-Type': 'text/css'},
+  png: {'Content-Type': 'image/png'}
+};
+
 export default async (request, response, parsedUrl) => {
   try {
     const file = parsedUrl.searchParams.get('');
-    const data = await fs.promises.readFile(`./game/${file}`, 'utf-8');
+    const data = await fs.promises.readFile(`./game/${file}`);
     const splited = file.split('.');
 
-    if (splited[splited.length - 1] === 'js') {
-      response.writeHead(200, {'Content-Type': 'text/javascript'});
-    } else if (splited[splited.length - 1] === 'css') {
-      response.writeHead(200, {'Content-Type': 'text/css'});
+    for (const [ext, header] of Object.entries(types)) {
+      if (splited[splited.length - 1] === ext) {
+        response.writeHead(200, header);
+      }
     }
-    response.end(data);
+    response.end(data, 'binary');
   } catch (e) {
     console.log(e);
     response.writeHead(404);

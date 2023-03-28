@@ -3,5 +3,6 @@ export default class Cell {
     this.x = x;
     this.y = y;
     this.color = color;
+    this.figure = null;
   }
 }
