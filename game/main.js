@@ -1,4 +1,4 @@
-import Board from './board/board.js';
+import Board from '/game?=board/board.js';
 
 const board = document.querySelector('.board');
 

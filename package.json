@@ -26,9 +26,6 @@
   "imports": {
     "#app/*": {
       "default": "./app/*"
-    },
-    "#game/*": {
-      "default": "./game/*"
     }
   }
 }

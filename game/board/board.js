@@ -1,5 +1,5 @@
-import { colors } from '../resources/colors.js';
-import Cell from './cell.js'
+import { colors } from '/game?=resources/colors.js';
+import Cell from '/game?=board/cell.js'
 export default class Board {
   static cells = [];
 
