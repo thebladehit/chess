@@ -32,3 +32,7 @@
     height: 60px;
     position: relative;
 }
+
+.selected {
+    background: rgba(151, 236, 60, 0.68);
+}

@@ -29,7 +29,6 @@ export default class Board {
     for (const row of this.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
-
       for (const cell of row) {
         const cellHTML = document.createElement('div');
         cellHTML.className = `col ${cell.color}`;
@@ -39,6 +38,12 @@ export default class Board {
           img.src = cell.figure.img;
           cellHTML.append(img);
         }
+        cellHTML.addEventListener('click', () => {
+          document.querySelectorAll('.board .col').forEach(col => col.classList.remove('selected'));
+          if (cell.figure) {
+            cellHTML.classList.add('selected');
+          }
+        });
         rowHTML.append(cellHTML);
       }
 
