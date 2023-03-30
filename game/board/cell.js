@@ -4,5 +4,13 @@ export default class Cell {
     this.y = y;
     this.color = color;
     this.figure = null;
+    this.available = false;
+  }
+
+   moveFigure(selectedCell) {
+    if (this.figure?.canMove(selectedCell)) {
+      selectedCell.figure = this.figure;
+      this.figure = null;
+    }
   }
 }

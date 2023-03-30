@@ -9,6 +9,7 @@ import Rook from "/game?=figures/rook.js";
 
 export default class Board {
   static cells = [];
+  static selected = null;
 
   static createBoard() {
     for (let i = 0; i < 8; i++) {
@@ -26,28 +27,67 @@ export default class Board {
   }
 
   static drawBoard(board) {
+    board.innerHTML = '';
     for (const row of this.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
       for (const cell of row) {
-        const cellHTML = document.createElement('div');
-        cellHTML.className = `col ${cell.color}`;
-        if (cell.figure) {
-          const img = document.createElement('img');
-          img.classList.add('figure');
-          img.src = cell.figure.img;
-          cellHTML.append(img);
-        }
-        cellHTML.addEventListener('click', () => {
-          document.querySelectorAll('.board .col').forEach(col => col.classList.remove('selected'));
-          if (cell.figure) {
-            cellHTML.classList.add('selected');
-          }
-        });
+        const cellHTML = this.createCellHtml(cell, board);
         rowHTML.append(cellHTML);
       }
-
       board.append(rowHTML);
+    }
+  }
+
+  static createCellHtml(cell, board) {
+    const cellHTML = document.createElement('div');
+    cellHTML.className = `col ${cell.color}`;
+    if (cell.available) {
+      const available = document.createElement('div');
+      if (!cell.figure) {
+        available.classList.add('available');
+      } else {
+        cellHTML.classList.add('availableFigure');
+      }
+      cellHTML.append(available);
+    }
+    if (cell.figure) {
+      const img = document.createElement('img');
+      img.classList.add('figure');
+      img.src = cell.figure.img;
+      cellHTML.append(img);
+    }
+    if (this.selected === cell) {
+      cellHTML.classList.add('selected');
+    }
+    cellHTML.addEventListener('click', () => {
+      if (this.selected && this.selected !== cell && this.selected?.figure.canMove(cell)) {
+        this.selected.moveFigure(cell);
+        this.selected = null;
+        this.clearAvailable();
+        this.drawBoard(board);
+      } else if (cell.figure) {
+        this.selected = cell;
+        this.highlightCells(cell);
+        this.drawBoard(board);
+      }
+    });
+    return cellHTML;
+  }
+
+  static highlightCells(selectedCell) {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        cell.available = !!selectedCell?.figure.canMove(cell);
+      }
+    }
+  }
+
+  static clearAvailable() {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        cell.available = false;
+      }
     }
   }
 

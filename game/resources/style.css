@@ -36,3 +36,14 @@
 .selected {
     background: rgba(151, 236, 60, 0.68);
 }
+
+.available {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #b7b7b7;
+}
+
+.availableFigure {
+    background: rgba(245, 231, 81, 0.32);
+}

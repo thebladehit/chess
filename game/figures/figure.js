@@ -5,4 +5,8 @@ export default class Figure {
     this.cell = cell;
     this.cell.figure = this;
   }
+
+  canMove(selectedCell) {
+    return true;
+  }
 }
