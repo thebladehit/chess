@@ -10,4 +10,11 @@ export default class Bishop extends Figure {
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.BISHOP;
   }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    return true;
+  }
 }

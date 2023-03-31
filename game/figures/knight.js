@@ -10,4 +10,11 @@ export default class Knight extends Figure {
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.KNIGHT;
   }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    return true;
+  }
 }

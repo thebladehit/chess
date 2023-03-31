@@ -18,8 +18,12 @@ export default class Figure {
   }
 
   canMove(selectedCell) {
-    if (selectedCell.figure?.color === this.color) return false;
-    if (selectedCell.figure?.name === figureNames.KING) return false;
+    if (selectedCell.figure?.color === this.color) {
+      return false;
+    }
+    if (selectedCell.figure?.name === figureNames.KING) {
+      return false;
+    }
     return true;
   }
 }

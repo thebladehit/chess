@@ -10,4 +10,11 @@ export default class King extends Figure {
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.KING;
   }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    return true;
+  }
 }

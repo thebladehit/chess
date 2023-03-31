@@ -10,4 +10,11 @@ export default class Rook extends Figure {
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.ROOK;
   }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    return true;
+  }
 }
