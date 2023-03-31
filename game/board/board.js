@@ -103,13 +103,13 @@ export default class Board {
   }
 
   static addQueens(firstColor, secondColor) {
-    new Queen(secondColor, this.getCell(0, 4));
-    new Queen(firstColor, this.getCell(7, 4));
+    new Queen(secondColor, this.getCell(0, firstColor === colors.WHITE ? 3 : 4));
+    new Queen(firstColor, this.getCell(7, firstColor === colors.WHITE ? 3 : 4));
   }
 
   static addKing(firstColor, secondColor) {
-    new King(secondColor, this.getCell(0, 3));
-    new King(firstColor, this.getCell(7, 3));
+    new King(secondColor, this.getCell(0, firstColor === colors.WHITE ? 4 : 3));
+    new King(firstColor, this.getCell(7, firstColor === colors.WHITE ? 4 : 3));
   }
 
   static addBishop(firstColor, secondColor) {

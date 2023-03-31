@@ -20,6 +20,6 @@ export default class Figure {
   canMove(selectedCell) {
     if (selectedCell.figure?.color === this.color) return false;
     if (selectedCell.figure?.name === figureNames.KING) return false;
-    else return true;
+    return true;
   }
 }
