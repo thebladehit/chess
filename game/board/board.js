@@ -61,7 +61,7 @@ export default class Board {
       cellHTML.classList.add('selected');
     }
     cellHTML.addEventListener('click', () => {
-      if (this.selected && this.selected !== cell && this.selected?.figure.canMove(cell)) {
+      if (this.selected && this.selected !== cell && this.selected.figure.canMove(cell)) {
         this.selected.moveFigure(cell);
         this.selected = null;
         this.clearAvailable();
@@ -78,7 +78,7 @@ export default class Board {
   static highlightCells(selectedCell) {
     for (const row of this.cells) {
       for (const cell of row) {
-        cell.available = !!selectedCell?.figure.canMove(cell);
+        cell.available = selectedCell.figure.canMove(cell);
       }
     }
   }
