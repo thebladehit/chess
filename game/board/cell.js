@@ -11,6 +11,7 @@ export default class Cell {
 
    moveFigure(selectedCell) {
      selectedCell.figure = this.figure;
+     this.figure?.moveFigure();
      this.figure.cell = selectedCell;
      this.figure = null;
   }
@@ -50,14 +51,11 @@ export default class Cell {
   isEmptyDiagonal(selectedCell) {
     const absX = Math.abs(this.x - selectedCell.x);
     const absY = Math.abs(this.y - selectedCell.y);
-
     if (absY !== absX) {
       return false;
     }
-
     const dy = selectedCell.y > this.y ? 1 : -1;
     const dx = selectedCell.x > this.x ? 1 : -1;
-
     for (let i = 1; i < absY; i++) {
       if (!Board.getCell(this.y + i * dy, this.x + i * dx).isEmpty()) {
         return false;

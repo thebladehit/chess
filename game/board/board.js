@@ -97,8 +97,8 @@ export default class Board {
 
   static addPawns(firstColor, secondColor) {
     for (let i = 0; i < 8; i++) {
-      new Pawn(secondColor, this.getCell(1, i));
-      new Pawn(firstColor, this.getCell(6, i));
+      new Pawn(secondColor, this.getCell(1, i), 1);
+      new Pawn(firstColor, this.getCell(6, i), -1);
     }
   }
 
