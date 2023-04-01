@@ -15,6 +15,7 @@ export default class Pawn extends Figure {
   }
 
   moveFigure() {
+    super.moveFigure();
     this.isFirstStep = false;
   }
 

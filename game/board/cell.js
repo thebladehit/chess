@@ -11,7 +11,7 @@ export default class Cell {
 
    moveFigure(selectedCell) {
      selectedCell.figure = this.figure;
-     this.figure?.moveFigure();
+     this.figure.moveFigure();
      this.figure.cell = selectedCell;
      this.figure = null;
   }

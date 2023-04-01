@@ -17,6 +17,10 @@ export default class Figure {
     this.name = figureNames.FIGURE;
   }
 
+  moveFigure() {
+
+  }
+
   canMove(selectedCell) {
     if (selectedCell.figure?.color === this.color) {
       return false;
