@@ -20,6 +20,13 @@ export default class Cell {
     return this.figure === null;
   }
 
+  isEnemy(selectedCell) {
+    if (selectedCell.figure) {
+      return this.figure.color !== selectedCell.figure.color;
+    }
+    return false;
+  }
+
   isEmptyVertical(selectedCell) {
     if (this.x !== selectedCell.x) {
       return false;

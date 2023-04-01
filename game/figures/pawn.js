@@ -23,11 +23,13 @@ export default class Pawn extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-
     if ((selectedCell.y === this.cell.y + this.direction || this.isFirstStep && selectedCell.y === this.cell.y + this.direction * 2)
       && selectedCell.x === this.cell.x
-      && Board.getCell(selectedCell.y, selectedCell.x).isEmpty()
-    ) {
+      && Board.getCell(selectedCell.y, selectedCell.x).isEmpty()) {
+      return true;
+    }
+    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)
+      && this.cell.isEnemy(selectedCell)) {
       return true;
     }
     return false;
