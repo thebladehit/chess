@@ -14,8 +14,8 @@ export default class Pawn extends Figure {
     this.direction = direction;
   }
 
-  moveFigure(selectedCell) {
-    super.moveFigure(selectedCell);
+  moveFigure() {
+    super.moveFigure();
     this.isFirstStep = false;
   }
 

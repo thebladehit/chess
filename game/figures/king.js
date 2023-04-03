@@ -13,8 +13,8 @@ export default class King extends Figure {
     this.name = figureNames.KING;
   }
 
-  moveFigure(selectedCell) {
-    super.moveFigure(selectedCell);
+  moveFigure() {
+    super.moveFigure();
     this.isFirstStep = false;
   }
 
