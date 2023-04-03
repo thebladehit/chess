@@ -11,10 +11,7 @@ export default class Queen extends Figure {
     this.name = figureNames.QUEEN;
   }
 
-  canMove(selectedCell) {
-    if (!super.canMove(selectedCell)) {
-      return false;
-    }
+  canBeat(selectedCell) {
     if (this.cell.isEmptyVertical(selectedCell)) {
       return true;
     }
@@ -22,6 +19,16 @@ export default class Queen extends Figure {
       return true;
     }
     if (this.cell.isEmptyDiagonal(selectedCell)) {
+      return true;
+    }
+    return false;
+  }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    if (this.canBeat(selectedCell)) {
       return true;
     }
     return false;

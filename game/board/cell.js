@@ -11,6 +11,7 @@ export default class Cell {
   }
 
    moveFigure(selectedCell) {
+     selectedCell.figure?.deleteFigure();
      selectedCell.figure = this.figure;
      this.figure.moveFigure();
      this.figure.cell = selectedCell;
@@ -31,13 +32,7 @@ export default class Cell {
   isUnderAttack(selectedCell) {
     for (const figure of Board.figures) {
       if (this.figure.color !== figure.color) {
-        if (figure.name === figureNames.PAWN) {
-          if (figure.canBeat(selectedCell)) {
-            console.log('hre');
-            return true;
-          }
-        }
-        else if (figure.canMove(selectedCell)) {
+        if (figure.canBeat(selectedCell)) {
           return true;
         }
       }
@@ -46,6 +41,9 @@ export default class Cell {
   }
 
   isEmptyVertical(selectedCell) {
+    if (this === selectedCell) {
+      return false;
+    }
     if (this.x !== selectedCell.x) {
       return false;
     }
@@ -60,6 +58,9 @@ export default class Cell {
   }
 
   isEmptyHorizontal(selectedCell) {
+    if (this === selectedCell) {
+      return false;
+    }
     if (this.y !== selectedCell.y) {
       return false;
     }
@@ -74,6 +75,9 @@ export default class Cell {
   }
 
   isEmptyDiagonal(selectedCell) {
+    if (this === selectedCell) {
+      return false;
+    }
     const absX = Math.abs(this.x - selectedCell.x);
     const absY = Math.abs(this.y - selectedCell.y);
     if (absY !== absX) {

@@ -11,15 +11,22 @@ export default class Rook extends Figure {
     this.name = figureNames.ROOK;
   }
 
-  canMove(selectedCell) {
-    if (!super.canMove(selectedCell)) {
-      return false;
-    }
+  canBeat(selectedCell) {
     if (this.cell.isEmptyHorizontal(selectedCell)) {
       return true;
     }
     if (this.cell.isEmptyVertical(selectedCell)) {
       return true;
+    }
+    return false;
+  }
+
+  canMove(selectedCell) {
+    if (!super.canMove(selectedCell)) {
+      return false;
+    }
+    if (this.canBeat(selectedCell)) {
+      return true
     }
     return false;
   }

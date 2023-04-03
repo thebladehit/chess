@@ -1,3 +1,5 @@
+import Board from "/game?=board/board.js";
+
 export const figureNames = {
   FIGURE: 'figure',
   KING: 'king',
@@ -15,10 +17,16 @@ export default class Figure {
     this.cell = cell;
     this.cell.figure = this;
     this.name = figureNames.FIGURE;
+    Board.figures.push(this);
   }
 
   moveFigure() {
 
+  }
+
+  deleteFigure() {
+    const inx = Board.figures.indexOf(this);
+    Board.figures.splice(inx, 1);
   }
 
   canMove(selectedCell) {

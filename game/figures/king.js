@@ -13,25 +13,31 @@ export default class King extends Figure {
     this.name = figureNames.KING;
   }
 
-  moveFigure() {
-    super.moveFigure();
+  moveFigure(selectedCell) {
+    super.moveFigure(selectedCell);
     this.isFirstStep = false;
+  }
+
+  canBeat(selectedCell) {
+    if ((selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x + 1)
+        || (selectedCell.y === this.cell.y && selectedCell.x === this.cell.x + 1)
+        || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x + 1)
+        || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x)
+        || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x - 1)
+        || (selectedCell.y === this.cell.y && selectedCell.x === this.cell.x - 1)
+        || (selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x - 1)
+        || (selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x))
+    {
+      return true;
+    }
+    return false;
   }
 
   canMove(selectedCell) {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if (((selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x + 1)
-      || (selectedCell.y === this.cell.y && selectedCell.x === this.cell.x + 1)
-      || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x + 1)
-      || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x)
-      || (selectedCell.y === this.cell.y - 1 && selectedCell.x === this.cell.x - 1)
-      || (selectedCell.y === this.cell.y && selectedCell.x === this.cell.x - 1)
-      || (selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x - 1)
-      || (selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x))
-      && !this.cell.isUnderAttack(selectedCell)
-    ) {
+    if (this.canBeat(selectedCell) && !this.cell.isUnderAttack(selectedCell)) {
       return true;
     }
     return false;

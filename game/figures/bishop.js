@@ -11,6 +11,13 @@ export default class Bishop extends Figure {
     this.name = figureNames.BISHOP;
   }
 
+  canBeat(selectedCell) {
+    if (this.cell.isEmptyDiagonal(selectedCell)) {
+      return true;
+    }
+    return false;
+  }
+
   canMove(selectedCell) {
     if (!super.canMove(selectedCell)) {
       return false;
