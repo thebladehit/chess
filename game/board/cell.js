@@ -1,4 +1,5 @@
 import Board from "/game?=board/board.js";
+import { figureNames } from "/game?=figures/figure.js";
 
 export default class Cell {
   constructor(y, x, color) {
@@ -23,6 +24,23 @@ export default class Cell {
   isEnemy(selectedCell) {
     if (selectedCell.figure) {
       return this.figure.color !== selectedCell.figure.color;
+    }
+    return false;
+  }
+
+  isUnderAttack(selectedCell) {
+    for (const figure of Board.figures) {
+      if (this.figure.color !== figure.color) {
+        if (figure.name === figureNames.PAWN) {
+          if (figure.canBeat(selectedCell)) {
+            console.log('hre');
+            return true;
+          }
+        }
+        else if (figure.canMove(selectedCell)) {
+          return true;
+        }
+      }
     }
     return false;
   }

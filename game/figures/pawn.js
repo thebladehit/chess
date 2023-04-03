@@ -19,6 +19,13 @@ export default class Pawn extends Figure {
     this.isFirstStep = false;
   }
 
+  canBeat(selectedCell) {
+    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)) {
+      return true;
+    }
+    return false;
+  }
+
   canMove(selectedCell) {
     if (!super.canMove(selectedCell)) {
       return false;

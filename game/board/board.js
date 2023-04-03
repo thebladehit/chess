@@ -10,6 +10,7 @@ import Rook from "/game?=figures/rook.js";
 export default class Board {
   static cells = [];
   static selected = null;
+  static figures = [];
 
   static createBoard() {
     for (let i = 0; i < 8; i++) {
@@ -97,40 +98,40 @@ export default class Board {
 
   static addPawns(firstColor, secondColor) {
     for (let i = 0; i < 8; i++) {
-      new Pawn(secondColor, this.getCell(1, i), 1);
-      new Pawn(firstColor, this.getCell(6, i), -1);
+      this.figures.push(new Pawn(secondColor, this.getCell(1, i), 1));
+      this.figures.push(new Pawn(firstColor, this.getCell(6, i), -1));
     }
   }
 
   static addQueens(firstColor, secondColor) {
-    new Queen(secondColor, this.getCell(0, firstColor === colors.WHITE ? 3 : 4));
-    new Queen(firstColor, this.getCell(7, firstColor === colors.WHITE ? 3 : 4));
+    this.figures.push(new Queen(secondColor, this.getCell(0, firstColor === colors.WHITE ? 3 : 4)));
+    this.figures.push(new Queen(firstColor, this.getCell(7, firstColor === colors.WHITE ? 3 : 4)));
   }
 
   static addKing(firstColor, secondColor) {
-    new King(secondColor, this.getCell(0, firstColor === colors.WHITE ? 4 : 3));
-    new King(firstColor, this.getCell(7, firstColor === colors.WHITE ? 4 : 3));
+    this.figures.push(new King(secondColor, this.getCell(0, firstColor === colors.WHITE ? 4 : 3)));
+    this.figures.push(new King(firstColor, this.getCell(7, firstColor === colors.WHITE ? 4 : 3)));
   }
 
   static addBishop(firstColor, secondColor) {
-    new Bishop(secondColor, this.getCell(0, 2));
-    new Bishop(secondColor, this.getCell(0, 5));
-    new Bishop(firstColor, this.getCell(7, 2));
-    new Bishop(firstColor, this.getCell(7, 5));
+    this.figures.push(new Bishop(secondColor, this.getCell(0, 2)));
+    this.figures.push(new Bishop(secondColor, this.getCell(0, 5)));
+    this.figures.push(new Bishop(firstColor, this.getCell(7, 2)));
+    this.figures.push(new Bishop(firstColor, this.getCell(7, 5)));
   }
 
   static addKnight(firstColor, secondColor) {
-    new Knight(secondColor, this.getCell(0, 1));
-    new Knight(secondColor, this.getCell(0, 6));
-    new Knight(firstColor, this.getCell(7, 1));
-    new Knight(firstColor, this.getCell(7, 6));
+    this.figures.push(new Knight(secondColor, this.getCell(0, 1)));
+    this.figures.push(new Knight(secondColor, this.getCell(0, 6)));
+    this.figures.push(new Knight(firstColor, this.getCell(7, 1)));
+    this.figures.push(new Knight(firstColor, this.getCell(7, 6)));
   }
 
   static addRook(firstColor, secondColor) {
-    new Rook(secondColor, this.getCell(0, 0));
-    new Rook(secondColor, this.getCell(0, 7));
-    new Rook(firstColor, this.getCell(7, 0));
-    new Rook(firstColor, this.getCell(7, 7));
+    this.figures.push(new Rook(secondColor, this.getCell(0, 0)));
+    this.figures.push(new Rook(secondColor, this.getCell(0, 7)));
+    this.figures.push(new Rook(firstColor, this.getCell(7, 0)));
+    this.figures.push(new Rook(firstColor, this.getCell(7, 7)));
   }
 
   static addFigure(firstColor, secondColor) {
