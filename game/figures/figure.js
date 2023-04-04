@@ -21,16 +21,22 @@ export default class Figure {
   }
 
   moveFigure() {
+
   }
 
   checkKing() {
-    for (const king of Board.kings) {
-      if (king.color !== this.color) {
-        if (king.cell.isUnderAttack(king.cell)) {
-          king.cell.check = true;
-        }
-      }
+    const enemyKing = Board.getEnemyKing(this.color);
+    if (enemyKing.cell.isUnderAttack(enemyKing.cell)) {
+      enemyKing.cell.check = true;
     }
+  }
+
+  isMyKingChecked() {
+    const king = Board.getMyKing(this.color);
+    if (king.cell.isUnderAttack(king.cell)) {
+      return true;
+    }
+    return false;
   }
 
   deleteFigure() {

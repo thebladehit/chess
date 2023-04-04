@@ -100,6 +100,19 @@ export default class Board {
     return this.cells[y][x];
   }
 
+  static getMyKing(color) {
+    for (const king of this.kings) {
+      if (king.color === color) return king;
+    }
+  }
+
+  static getEnemyKing(color) {
+    if (color === colors.WHITE) {
+      return this.getMyKing(colors.BLACK)
+    }
+    return color === colors.WHITE ? this.getMyKing(colors.BLACK) : this.getMyKing(colors.WHITE);
+  }
+
   static addPawns(firstColor, secondColor) {
     for (let i = 0; i < 8; i++) {
       new Pawn(secondColor, this.getCell(1, i), 1);
