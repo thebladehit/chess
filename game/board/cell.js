@@ -21,7 +21,13 @@ export default class Cell {
   }
 
   isEmpty() {
-    return this.figure === null;
+    if (this.figure?.name === figureNames.KING) {
+      return true;
+    }
+    if (this.figure) {
+      return false;
+    }
+    return true;
   }
 
   isEnemy(selectedCell) {
