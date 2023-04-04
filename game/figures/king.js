@@ -1,5 +1,6 @@
 import Figure, { figureNames } from "/game?=figures/figure.js";
 import { colors } from "/game?=resources/colors.js";
+import Board from "/game?=board/board.js";
 
 const whiteImg = '/game?=resources/img/whiteKing.png';
 const blackImg = '/game?=resources/img/blackKing.png';
@@ -11,11 +12,17 @@ export default class King extends Figure {
     super(color, cell);
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.KING;
+    Board.kings.push(this);
   }
 
   moveFigure() {
     super.moveFigure();
     this.isFirstStep = false;
+    this.clearCheck();
+  }
+
+  clearCheck() {
+    this.cell.check = false;
   }
 
   canBeat(selectedCell) {

@@ -11,6 +11,7 @@ export default class Board {
   static cells = [];
   static selected = null;
   static figures = [];
+  static kings = [];
 
   static createBoard() {
     for (let i = 0; i < 8; i++) {
@@ -60,6 +61,9 @@ export default class Board {
     }
     if (this.selected === cell) {
       cellHTML.classList.add('selected');
+    }
+    if (cell.check) {
+      cellHTML.classList.add('check');
     }
     cellHTML.addEventListener('click', () => {
       if (this.selected && this.selected !== cell && this.selected.figure.canMove(cell)) {

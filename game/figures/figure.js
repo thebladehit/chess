@@ -21,7 +21,16 @@ export default class Figure {
   }
 
   moveFigure() {
+  }
 
+  checkKing() {
+    for (const king of Board.kings) {
+      if (king.color !== this.color) {
+        if (king.cell.isUnderAttack(king.cell)) {
+          king.cell.check = true;
+        }
+      }
+    }
   }
 
   deleteFigure() {

@@ -8,6 +8,7 @@ export default class Cell {
     this.color = color;
     this.figure = null;
     this.available = false;
+    this.check = false;
   }
 
    moveFigure(selectedCell) {
@@ -15,6 +16,7 @@ export default class Cell {
      selectedCell.figure = this.figure;
      this.figure.moveFigure();
      this.figure.cell = selectedCell;
+     this.figure.checkKing();
      this.figure = null;
   }
 
