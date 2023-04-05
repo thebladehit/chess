@@ -20,8 +20,8 @@ export default class Cell {
      selectedCell.figure.checkKing();
   }
 
-  isEmpty() {
-    if (this.figure?.name === figureNames.KING) {
+  isEmpty(color) {
+    if (this.figure?.name === figureNames.KING && this.figure?.color !== color) {
       return true;
     }
     if (this.figure) {
@@ -58,7 +58,7 @@ export default class Cell {
     const min = Math.min(this.y, selectedCell.y);
     const max = Math.max(this.y, selectedCell.y);
     for (let i = min + 1; i < max; i++) {
-      if (!Board.getCell(i, this.x).isEmpty()) {
+      if (!Board.getCell(i, this.x).isEmpty(this.color)) {
         return false;
       }
     }
@@ -75,7 +75,7 @@ export default class Cell {
     const min = Math.min(this.x, selectedCell.x);
     const max = Math.max(this.x, selectedCell.x);
     for (let i = min + 1; i < max; i++) {
-      if (!Board.getCell(this.y, i).isEmpty()) {
+      if (!Board.getCell(this.y, i).isEmpty(this.color)) {
         return false;
       }
     }
@@ -94,7 +94,7 @@ export default class Cell {
     const dy = selectedCell.y > this.y ? 1 : -1;
     const dx = selectedCell.x > this.x ? 1 : -1;
     for (let i = 1; i < absY; i++) {
-      if (!Board.getCell(this.y + i * dy, this.x + i * dx).isEmpty()) {
+      if (!Board.getCell(this.y + i * dy, this.x + i * dx).isEmpty(this.color)) {
         return false;
       }
     }
