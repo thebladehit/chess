@@ -47,7 +47,7 @@ export default class Figure {
       }
     } else if (king.cell.y === king.cell.checkedBy[0].y) {
       for (let i = minX; i <= maxX; i++) {
-        const cell = Board.getCell(i, king.cell.x);
+        const cell = Board.getCell(king.cell.y, i);
         if (cell.name !== figureNames.KING) {
           cells.push(cell);
         }

@@ -28,7 +28,7 @@ export default class Queen extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if (this.canBeat(selectedCell)) {
+    if ((this.canBeat(selectedCell) && !this.isMyKingChecked()) || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && this.canBeat(selectedCell))) {
       return true;
     }
     return false;
