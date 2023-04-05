@@ -9,6 +9,7 @@ export default class Cell {
     this.figure = null;
     this.available = false;
     this.check = false;
+    this.checkedBy = [];
   }
 
    moveFigure(selectedCell) {
@@ -37,15 +38,20 @@ export default class Cell {
     return false;
   }
 
-  isUnderAttack(selectedCell) {
+  getAttackingFigures(selectedCell) {
+    const figures = [];
     for (const figure of Board.figures) {
       if (this.figure.color !== figure.color) {
         if (figure.canBeat(selectedCell)) {
-          return true;
+          figures.push(figure.cell);
         }
       }
     }
-    return false;
+    return figures;
+  }
+
+  isUnderAttack(selectedCell) {
+    return this.getAttackingFigures(selectedCell).length !== 0;
   }
 
   isEmptyVertical(selectedCell) {

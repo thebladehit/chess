@@ -24,10 +24,59 @@ export default class Figure {
 
   }
 
+  canProtectKing(selectedCell) {
+    const cells = [];
+    const king = Board.getMyKing(this.color);
+
+    if (king.cell.checkedBy.length > 1) {
+      return false;
+    }
+
+    const minX = Math.min(king.cell.x, king.cell.checkedBy[0].x);
+    const maxX = Math.max(king.cell.x, king.cell.checkedBy[0].x);
+
+    const minY = Math.min(king.cell.y, king.cell.checkedBy[0].y);
+    const maxY = Math.max(king.cell.y, king.cell.checkedBy[0].y);
+
+    if (king.cell.x === king.cell.checkedBy[0].x) {
+      for (let i = minY; i <= maxY; i++) {
+        const cell = Board.getCell(i, king.cell.x);
+        if (cell.name !== figureNames.KING) {
+          cells.push(cell);
+        }
+      }
+    } else if (king.cell.y === king.cell.checkedBy[0].y) {
+      for (let i = minX; i <= maxX; i++) {
+        const cell = Board.getCell(i, king.cell.x);
+        if (cell.name !== figureNames.KING) {
+          cells.push(cell);
+        }
+      }
+    } else if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
+      cells.push(king.checkedBy[0]);
+    } else {
+      for (let i = 0; i <= maxY - minY; i++) {
+        const cell = Board.getCell(minY + i, minX + i);
+        if (cell.name !== figureNames.KING) {
+          cells.push(cell);
+        }
+      }
+    }
+
+    for (const cell of cells) {
+      if (selectedCell === cell) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   checkKing() {
     const enemyKing = Board.getEnemyKing(this.color);
-    if (enemyKing.cell.isUnderAttack(enemyKing.cell)) {
+    const attackingFigures = enemyKing.cell.getAttackingFigures(enemyKing.cell);
+    if (attackingFigures.length !== 0) {
       enemyKing.cell.check = true;
+      enemyKing.cell.checkedBy = attackingFigures;
     }
   }
 
