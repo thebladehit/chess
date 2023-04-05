@@ -22,7 +22,7 @@ export default class Bishop extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if (this.cell.isEmptyDiagonal(selectedCell)) {
+    if ((this.canBeat(selectedCell) && !this.isMyKingChecked()) || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && this.canBeat(selectedCell))) {
       return true;
     }
     return false;

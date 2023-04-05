@@ -20,23 +20,27 @@ export default class Pawn extends Figure {
   }
 
   canBeat(selectedCell) {
-    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)) {
+    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)
+      && this.cell.isEnemy(selectedCell))
+    {
       return true;
     }
     return false;
+  }
+
+  isAvailable(selectedCell) {
+    return (selectedCell.y === this.cell.y + this.direction || this.isFirstStep && selectedCell.y === this.cell.y + this.direction * 2)
+      && selectedCell.x === this.cell.x
+      && Board.getCell(selectedCell.y, selectedCell.x).isEmpty();
   }
 
   canMove(selectedCell) {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if ((selectedCell.y === this.cell.y + this.direction || this.isFirstStep && selectedCell.y === this.cell.y + this.direction * 2)
-      && selectedCell.x === this.cell.x
-      && Board.getCell(selectedCell.y, selectedCell.x).isEmpty()) {
-      return true;
-    }
-    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)
-      && this.cell.isEnemy(selectedCell)) {
+    if (((this.isAvailable(selectedCell) || this.canBeat(selectedCell)) && !this.isMyKingChecked())
+      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.canBeat(selectedCell) || this.isAvailable(selectedCell))))
+    {
       return true;
     }
     return false;
