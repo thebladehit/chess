@@ -24,7 +24,7 @@ export default class Figure {
 
   }
 
-  canProtectKing(selectedCell) {
+  getAttackedCells() {
     const cells = [];
     const king = Board.getMyKing(this.color);
 
@@ -34,36 +34,33 @@ export default class Figure {
 
     const minX = Math.min(king.cell.x, king.cell.checkedBy[0].x);
     const maxX = Math.max(king.cell.x, king.cell.checkedBy[0].x);
-
     const minY = Math.min(king.cell.y, king.cell.checkedBy[0].y);
     const maxY = Math.max(king.cell.y, king.cell.checkedBy[0].y);
 
     if (king.cell.x === king.cell.checkedBy[0].x) {
       for (let i = minY; i <= maxY; i++) {
-        const cell = Board.getCell(i, king.cell.x);
-        if (cell.name !== figureNames.KING) {
-          cells.push(cell);
-        }
+        cells.push(Board.getCell(i, king.cell.x));
       }
     } else if (king.cell.y === king.cell.checkedBy[0].y) {
       for (let i = minX; i <= maxX; i++) {
-        const cell = Board.getCell(king.cell.y, i);
-        if (cell.name !== figureNames.KING) {
-          cells.push(cell);
-        }
+        cells.push(Board.getCell(king.cell.y, i));
       }
     } else if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
-      cells.push(king.checkedBy[0]);
+      cells.push(king.cell.checkedBy[0]);
     } else {
-      for (let i = 0; i <= maxY - minY; i++) {
-        const cell = Board.getCell(minY + i, minX + i);
-        if (cell.name !== figureNames.KING) {
-          cells.push(cell);
-        }
+      const dx = king.cell.x < king.cell.checkedBy[0].x ? 1 : -1;
+      const dy = king.cell.y < king.cell.checkedBy[0].y ? 1 : -1;
+      const abs = Math.abs(king.cell.y - king.cell.checkedBy[0].y);
+
+      for (let i = 1; i <= abs; i++) {
+        cells.push(Board.getCell(king.cell.y + i * dy, king.cell.x + i * dx));
       }
     }
+    return cells;
+  }
 
-    for (const cell of cells) {
+  canProtectKing(selectedCell) {
+    for (const cell of this.getAttackedCells()) {
       if (selectedCell === cell) {
         return true;
       }
