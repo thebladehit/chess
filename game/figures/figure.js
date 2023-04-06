@@ -40,10 +40,11 @@ export default class Figure {
   isKingWillBeChecked(selectedCell) {
     const attackingFigures = this.cell.getAttackingFigures(this.cell);
     for (const attackingFigure of attackingFigures) {
-      if (attackingFigure.figure.name === figureNames.KNIGHT || attackingFigure.figure.name === figureNames.PAWN) {
+      if (attackingFigure.figure.name === figureNames.KNIGHT || attackingFigure.figure.name === figureNames.PAWN || attackingFigure.figure.name === figureNames.KING) {
         continue;
       }
       const attackedCells = Board.getFutureAttackedCells(this.cell, attackingFigure);
+      console.log(attackingFigure, attackedCells)
       if (this.isHereKing(attackedCells)) {
         for (const cell of attackedCells) {
           if (cell === selectedCell) {
