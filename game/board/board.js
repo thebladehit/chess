@@ -6,6 +6,7 @@ import King from "/game?=figures/king.js";
 import Bishop from "/game?=figures/bishop.js";
 import Knight from "/game?=figures/knight.js";
 import Rook from "/game?=figures/rook.js";
+import { figureNames } from "/game?=figures/figure.js";
 
 export default class Board {
   static cells = [];
@@ -98,6 +99,79 @@ export default class Board {
 
   static getCell(y, x) {
     return this.cells[y][x];
+  }
+
+  static getAttackedCells(color) {
+    const cells = [];
+    const king = this.getMyKing(color);
+
+    if (king.cell.checkedBy.length > 1) {
+      return [];
+    }
+
+    const minX = Math.min(king.cell.x, king.cell.checkedBy[0].x);
+    const maxX = Math.max(king.cell.x, king.cell.checkedBy[0].x);
+    const minY = Math.min(king.cell.y, king.cell.checkedBy[0].y);
+    const maxY = Math.max(king.cell.y, king.cell.checkedBy[0].y);
+
+    if (king.cell.x === king.cell.checkedBy[0].x) {
+      for (let i = minY; i <= maxY; i++) {
+        cells.push(this.getCell(i, king.cell.x));
+      }
+    } else if (king.cell.y === king.cell.checkedBy[0].y) {
+      for (let i = minX; i <= maxX; i++) {
+        cells.push(this.getCell(king.cell.y, i));
+      }
+    } else if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
+      cells.push(king.cell.checkedBy[0]);
+    } else {
+      const dx = king.cell.x < king.cell.checkedBy[0].x ? 1 : -1;
+      const dy = king.cell.y < king.cell.checkedBy[0].y ? 1 : -1;
+      const abs = Math.abs(king.cell.y - king.cell.checkedBy[0].y);
+
+      for (let i = 1; i <= abs; i++) {
+        cells.push(this.getCell(king.cell.y + i * dy, king.cell.x + i * dx));
+      }
+    }
+    return cells;
+  }
+
+  static getFutureAttackedCells(attackedCell, attackingCell) {
+    const cells = [];
+    const dy = attackingCell.y > attackedCell.y ? -1 : 1;
+    const dx = attackingCell.x > attackedCell.x ? -1 : 1;
+
+    if (attackedCell.x === attackingCell.x) {
+      let y = attackingCell.y;
+      while (y >= 0 && y <= 7) {
+        const cell = this.getCell(y, attackingCell.x);
+        if (!cell) break;
+        cells.push(cell);
+        if (cell.figure?.name === figureNames.KING) break;
+        y += dy;
+      }
+    } else if (attackedCell.y === attackingCell.y) {
+      let x = attackingCell.x;
+      while (x >= 0 && x <= 7) {
+        const cell = this.getCell(attackingCell.y, x);
+        if (!cell) break;
+        cells.push(cell);
+        if (cell.figure?.name === figureNames.KING) break;
+        x += dx;
+      }
+    } else {
+      let y = attackingCell.y;
+      let x = attackingCell.x;
+      while (y >= 0 && y <= 7) {
+        const cell = this.getCell(y, x);
+        if (!cell) break;
+        cells.push(cell);
+        if (cell.figure?.name === figureNames.KING) break;
+        y += dy;
+        x += dx;
+      }
+    }
+    return cells;
   }
 
   static getMyKing(color) {

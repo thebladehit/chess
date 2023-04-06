@@ -28,44 +28,37 @@ export default class Figure {
     Board.getMyKing(this.color).cell.check = false;
   }
 
-  getAttackedCells() {
-    const cells = [];
-    const king = Board.getMyKing(this.color);
-
-    if (king.cell.checkedBy.length > 1) {
-      return false;
-    }
-
-    const minX = Math.min(king.cell.x, king.cell.checkedBy[0].x);
-    const maxX = Math.max(king.cell.x, king.cell.checkedBy[0].x);
-    const minY = Math.min(king.cell.y, king.cell.checkedBy[0].y);
-    const maxY = Math.max(king.cell.y, king.cell.checkedBy[0].y);
-
-    if (king.cell.x === king.cell.checkedBy[0].x) {
-      for (let i = minY; i <= maxY; i++) {
-        cells.push(Board.getCell(i, king.cell.x));
-      }
-    } else if (king.cell.y === king.cell.checkedBy[0].y) {
-      for (let i = minX; i <= maxX; i++) {
-        cells.push(Board.getCell(king.cell.y, i));
-      }
-    } else if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
-      cells.push(king.cell.checkedBy[0]);
-    } else {
-      const dx = king.cell.x < king.cell.checkedBy[0].x ? 1 : -1;
-      const dy = king.cell.y < king.cell.checkedBy[0].y ? 1 : -1;
-      const abs = Math.abs(king.cell.y - king.cell.checkedBy[0].y);
-
-      for (let i = 1; i <= abs; i++) {
-        cells.push(Board.getCell(king.cell.y + i * dy, king.cell.x + i * dx));
+  canProtectKing(selectedCell) {
+    for (const cell of Board.getAttackedCells(this.color)) {
+      if (selectedCell === cell) {
+        return true;
       }
     }
-    return cells;
+    return false;
   }
 
-  canProtectKing(selectedCell) {
-    for (const cell of this.getAttackedCells()) {
-      if (selectedCell === cell) {
+  isKingWillBeChecked(selectedCell) {
+    const attackingFigures = this.cell.getAttackingFigures(this.cell);
+    for (const attackingFigure of attackingFigures) {
+      if (attackingFigure.figure.name === figureNames.KNIGHT || attackingFigure.figure.name === figureNames.PAWN) {
+        continue;
+      }
+      const attackedCells = Board.getFutureAttackedCells(this.cell, attackingFigure);
+      if (this.isHereKing(attackedCells)) {
+        for (const cell of attackedCells) {
+          if (cell === selectedCell) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isHereKing(cells) {
+    for (const cell of cells) {
+      if (cell.figure?.name === figureNames.KING) {
         return true;
       }
     }
