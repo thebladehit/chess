@@ -21,7 +21,11 @@ export default class Figure {
   }
 
   moveFigure() {
+    this.clearCheck();
+  }
 
+  clearCheck() {
+    Board.getMyKing(this.color).cell.check = false;
   }
 
   getAttackedCells() {

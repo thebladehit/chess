@@ -18,11 +18,6 @@ export default class King extends Figure {
   moveFigure() {
     super.moveFigure();
     this.isFirstStep = false;
-    this.clearCheck();
-  }
-
-  clearCheck() {
-    this.cell.check = false;
   }
 
   canBeat(selectedCell) {
