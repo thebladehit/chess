@@ -38,7 +38,7 @@ export default class Pawn extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if (((this.isAvailable(selectedCell) || this.canBeat(selectedCell)) && !this.isMyKingChecked())
+    if (((this.isAvailable(selectedCell) || this.canBeat(selectedCell)) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
       || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.canBeat(selectedCell) || this.isAvailable(selectedCell))))
     {
       return true;

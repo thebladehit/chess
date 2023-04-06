@@ -44,7 +44,7 @@ export default class Figure {
         continue;
       }
       const attackedCells = Board.getFutureAttackedCells(this.cell, attackingFigure);
-      console.log(attackingFigure, attackedCells)
+      console.log(attackedCells);
       if (this.isHereKing(attackedCells)) {
         for (const cell of attackedCells) {
           if (cell === selectedCell) {
