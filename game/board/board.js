@@ -146,6 +146,9 @@ export default class Board {
       while (y >= 0 && y <= 7) {
         const cell = this.getCell(y, attackingCell.x);
         if (!cell) break;
+        if (!cell.isEmpty(attackingCell.figure.color) && cell !== attackedCell && cell !== attackingCell) {
+          break;
+        }
         cells.push(cell);
         if (cell.figure?.name === figureNames.KING) break;
         y += dy;
@@ -155,6 +158,9 @@ export default class Board {
       while (x >= 0 && x <= 7) {
         const cell = this.getCell(attackingCell.y, x);
         if (!cell) break;
+        if (!cell.isEmpty(attackingCell.figure.color) && cell !== attackedCell && cell !== attackingCell) {
+          break;
+        }
         cells.push(cell);
         if (cell.figure?.name === figureNames.KING) break;
         x += dx;
@@ -165,6 +171,9 @@ export default class Board {
       while (y >= 0 && y <= 7) {
         const cell = this.getCell(y, x);
         if (!cell) break;
+        if (!cell.isEmpty(attackingCell.figure.color) && cell !== attackedCell && cell !== attackingCell) {
+          break;
+        }
         cells.push(cell);
         if (cell.figure?.name === figureNames.KING) break;
         y += dy;
