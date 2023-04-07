@@ -20,6 +20,34 @@ export default class King extends Figure {
     this.isFirstStep = false;
   }
 
+  canDoCastling(selectedCell) {
+    if (!this.isFirstStep) {
+      return false;
+    }
+    if (this.cell.y !== selectedCell.y || Math.abs(this.cell.x - selectedCell.x) !== 2) {
+      return false;
+    }
+    const cells = Board.getCellsForCastling(selectedCell, this.color);
+    if (!cells[cells.length - 1].figure) {
+      return false;
+    }
+    if (cells[cells.length - 1].figure.name !== figureNames.ROOK) {
+      return false;
+    }
+    if (!cells[cells.length - 1].figure.isFirstStep) {
+      return false;
+    }
+    for (let i = 0; i< cells.length - 1; i++) {
+      if (cells[i].figure) {
+        return false;
+      }
+      if (this.cell.isUnderAttack(cells[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   canBeat(selectedCell) {
     if ((selectedCell.y === this.cell.y + 1 && selectedCell.x === this.cell.x + 1)
         || (selectedCell.y === this.cell.y && selectedCell.x === this.cell.x + 1)
@@ -36,6 +64,9 @@ export default class King extends Figure {
   }
 
   canMove(selectedCell) {
+    if (this.canDoCastling(selectedCell)) {
+      return true;
+    }
     if (!super.canMove(selectedCell)) {
       return false;
     }

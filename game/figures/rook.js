@@ -5,10 +5,17 @@ const whiteImg = '/game?=resources/img/whiteRook.png';
 const blackImg = '/game?=resources/img/blackRook.png';
 
 export default class Rook extends Figure {
+  isFirstStep = true;
+
   constructor(color, cell) {
     super(color, cell);
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.ROOK;
+  }
+
+  moveFigure() {
+    super.moveFigure();
+    this.isFirstStep = false;
   }
 
   canBeat(selectedCell) {

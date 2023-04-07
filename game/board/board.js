@@ -183,6 +183,18 @@ export default class Board {
     return cells;
   }
 
+  static getCellsForCastling(selectedCell, color) {
+    const cells = [];
+    const king = this.getMyKing(color);
+    const dx = selectedCell.x > king.cell.x ? 1 : -1;
+    let x = king.cell.x + dx;
+    while (x >= 0 && x <= 7) {
+      cells.push(this.getCell(king.cell.y, x));
+      x += dx;
+    }
+    return cells;
+  }
+
   static getMyKing(color) {
     for (const king of this.kings) {
       if (king.color === color) return king;
