@@ -45,6 +45,8 @@ export default class King extends Figure {
         return false;
       }
     }
+    selectedCell.rookForCastling = cells[cells.length - 1];
+    selectedCell.cellForRookCastling = cells[0];
     return true;
   }
 

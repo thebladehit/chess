@@ -74,6 +74,7 @@ export default class Board {
         this.drawBoard(board);
       } else if (cell.figure) {
         this.selected = cell;
+        this.clearRookForCastling();
         this.highlightCells(cell);
         this.drawBoard(board);
       }
@@ -93,6 +94,15 @@ export default class Board {
     for (const row of this.cells) {
       for (const cell of row) {
         cell.available = false;
+      }
+    }
+  }
+
+  static clearRookForCastling() {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        cell.cellForRookCastling = null;
+        cell.rookForCastling = null;
       }
     }
   }

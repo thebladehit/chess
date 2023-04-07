@@ -10,9 +10,12 @@ export default class Cell {
     this.available = false;
     this.check = false;
     this.checkedBy = [];
+    this.rookForCastling = null;
+    this.cellForRookCastling = null;
   }
 
    moveFigure(selectedCell) {
+     selectedCell.rookForCastling?.moveFigure(selectedCell.cellForRookCastling);
      selectedCell.figure?.deleteFigure();
      selectedCell.figure = this.figure;
      this.figure.moveFigure();
