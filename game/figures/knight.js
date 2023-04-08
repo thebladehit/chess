@@ -22,7 +22,7 @@ export default class Knight extends Figure {
       return false;
     }
     if ((this.canBeat(selectedCell) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
-      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && this.canBeat(selectedCell)))
+      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && this.canBeat(selectedCell) && !this.isKingWillBeChecked(selectedCell)))
     {
       return true;
     }
