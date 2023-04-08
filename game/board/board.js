@@ -96,7 +96,6 @@ export default class Board {
     const list = document.createElement('div');
     list.classList.add('listFigure');
     for (const figure of Object.values(figuresForList)) {
-      console.log(figure);
       const div = document.createElement('div');
       const img = this.createImgHtml(null, color === colors.WHITE ? figure.whiteFigure : figure.blackFigure);
       div.append(img);
