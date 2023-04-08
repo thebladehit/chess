@@ -1,8 +1,8 @@
 import Figure, { figureNames } from "/game?=figures/figure.js";
 import { colors } from "/game?=resources/colors.js";
 
-const whiteImg = '/game?=resources/img/whiteKnight.png';
-const blackImg = '/game?=resources/img/blackKnight.png';
+export const whiteImg = '/game?=resources/img/whiteKnight.png';
+export const blackImg = '/game?=resources/img/blackKnight.png';
 
 export default class Knight extends Figure {
   constructor(color, cell) {

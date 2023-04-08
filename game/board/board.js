@@ -1,18 +1,26 @@
 import { colors } from "/game?=resources/colors.js";
 import Cell from "/game?=board/cell.js";
 import Pawn from "/game?=figures/pawn.js";
-import Queen from "/game?=figures/queen.js";
+import Queen, { whiteImg as whiteQueen, blackImg as blackQueen } from "/game?=figures/queen.js";
 import King from "/game?=figures/king.js";
-import Bishop from "/game?=figures/bishop.js";
-import Knight from "/game?=figures/knight.js";
-import Rook from "/game?=figures/rook.js";
+import Bishop, { whiteImg as whiteBishop, blackImg as blackBishop } from "/game?=figures/bishop.js";
+import Knight, { whiteImg as whiteKnight, blackImg as blackKnight } from "/game?=figures/knight.js";
+import Rook, { whiteImg as whiteRook, blackImg as blackRook } from "/game?=figures/rook.js";
 import { figureNames } from "/game?=figures/figure.js";
+
+const figuresForList = {
+  queen: { whiteFigure: whiteQueen, blackFigure: blackQueen, createFigure: (color, cell) => new Queen(color, cell) },
+  rook: { whiteFigure: whiteRook, blackFigure: blackRook, createFigure: (color, cell) => new Rook(color, cell) },
+  bishop: { whiteFigure: whiteBishop, blackFigure: blackBishop, createFigure: (color, cell) => new Bishop(color, cell) },
+  knight: { whiteFigure: whiteKnight, blackFigure: blackKnight, createFigure: (color, cell) => new Knight(color, cell) }
+};
 
 export default class Board {
   static cells = [];
   static selected = null;
   static figures = [];
   static kings = [];
+  static board = document.querySelector('.board');
 
   static createBoard() {
     for (let i = 0; i < 8; i++) {
@@ -29,20 +37,25 @@ export default class Board {
     }
   }
 
-  static drawBoard(board) {
-    board.innerHTML = '';
+  static drawBoard() {
+    this.board.innerHTML = '';
     for (const row of this.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
       for (const cell of row) {
-        const cellHTML = this.createCellHtml(cell, board);
+        const cellHTML = this.createCellHtml(cell);
         rowHTML.append(cellHTML);
       }
-      board.append(rowHTML);
+      this.board.append(rowHTML);
     }
   }
 
-  static createCellHtml(cell, board) {
+  static drawFigureList(color, cell) {
+    const list = this.createFigureListHtml(color, cell);
+    document.querySelector('.container').append(list);
+  }
+
+  static createCellHtml(cell) {
     const cellHTML = document.createElement('div');
     cellHTML.className = `col ${cell.color}`;
     if (cell.available) {
@@ -55,10 +68,7 @@ export default class Board {
       cellHTML.append(available);
     }
     if (cell.figure) {
-      const img = document.createElement('img');
-      img.classList.add('figure');
-      img.src = cell.figure.img;
-      cellHTML.append(img);
+      cellHTML.append(this.createImgHtml(cell));
     }
     if (this.selected === cell) {
       cellHTML.classList.add('selected');
@@ -71,15 +81,42 @@ export default class Board {
         this.selected.moveFigure(cell);
         this.selected = null;
         this.clearAvailable();
-        this.drawBoard(board);
+        this.drawBoard();
       } else if (cell.figure) {
         this.selected = cell;
         this.clearRookForCastling();
         this.highlightCells(cell);
-        this.drawBoard(board);
+        this.drawBoard();
       }
     });
     return cellHTML;
+  }
+
+  static createFigureListHtml(color, cell) {
+    const list = document.createElement('div');
+    list.classList.add('listFigure');
+    for (const figure of Object.values(figuresForList)) {
+      console.log(figure);
+      const div = document.createElement('div');
+      const img = this.createImgHtml(null, color === colors.WHITE ? figure.whiteFigure : figure.blackFigure);
+      div.append(img);
+      div.addEventListener('click', () => {
+        const createdFigure = figure.createFigure(color, cell);
+        cell.figure = createdFigure;
+        createdFigure.checkKing()
+        this.drawBoard();
+        list.remove();
+      });
+      list.append(div);
+    }
+    return list;
+  }
+
+  static createImgHtml(cell, figureSrc) {
+    const img = document.createElement('img');
+    img.classList.add('figure');
+    img.src = cell ? cell.figure.img : figureSrc;
+    return img;
   }
 
   static highlightCells(selectedCell) {
@@ -220,8 +257,8 @@ export default class Board {
 
   static addPawns(firstColor, secondColor) {
     for (let i = 0; i < 8; i++) {
-      new Pawn(secondColor, this.getCell(1, i), 1);
-      new Pawn(firstColor, this.getCell(6, i), -1);
+      new Pawn(secondColor, this.getCell(1, i), 1, 7);
+      new Pawn(firstColor, this.getCell(6, i), -1, 0);
     }
   }
 

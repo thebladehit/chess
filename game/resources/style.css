@@ -51,3 +51,8 @@
 .check {
     background: #ff4a4a;
 }
+
+.listFigure {
+    position: absolute;
+    display: flex;
+}
