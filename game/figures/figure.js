@@ -21,7 +21,7 @@ export default class Figure {
   }
 
   moveFigure() {
-    this.clearCheck();
+
   }
 
   clearCheck() {

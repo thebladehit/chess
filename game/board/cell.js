@@ -18,10 +18,11 @@ export default class Cell {
      selectedCell.rookForCastling?.moveFigure(selectedCell.cellForRookCastling);
      selectedCell.figure?.deleteFigure();
      selectedCell.figure = this.figure;
+     this.figure.clearCheck();
      this.figure.cell = selectedCell;
      this.figure = null;
-     selectedCell.figure.moveFigure();
      selectedCell.figure.checkKing();
+     selectedCell.figure.moveFigure();
   }
 
   isEmpty(color) {
