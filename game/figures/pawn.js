@@ -36,7 +36,7 @@ export default class Pawn extends Figure {
   }
 
   isAvailable(selectedCell) {
-    return (selectedCell.y === this.cell.y + this.direction || this.isFirstStep && selectedCell.y === this.cell.y + this.direction * 2)
+    return (selectedCell.y === this.cell.y + this.direction || this.isFirstStep && selectedCell.y === this.cell.y + this.direction * 2 && Board.getCell(this.cell.y + this.direction, this.cell.x).isEmpty())
       && selectedCell.x === this.cell.x
       && Board.getCell(selectedCell.y, selectedCell.x).isEmpty();
   }
