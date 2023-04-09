@@ -71,6 +71,25 @@ export default class Figure {
     if (attackingFigures.length !== 0) {
       enemyKing.cell.check = true;
       enemyKing.cell.checkedBy = attackingFigures;
+      this.checkMate();
+    }
+  }
+
+  checkMate() {
+    const availableCells = [];
+    for (const figure of Board.figures) {
+      if (figure.color !== this.color) {
+        for (const row of Board.cells) {
+          for (const cell of row) {
+            if (figure.canMove(cell)) {
+              availableCells.push(cell);
+            }
+          }
+        }
+      }
+    }
+    if (availableCells.length === 0) {
+      console.log(`${this.color} win`);
     }
   }
 
