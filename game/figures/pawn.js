@@ -15,17 +15,33 @@ export default class Pawn extends Figure {
     this.finalCell = finalCell;
   }
 
-  moveFigure() {
+  moveFigure(oldCell) {
     super.moveFigure();
     this.isFirstStep = false;
     if (this.isFinalCell()) {
       this.deleteFigure();
       Board.drawFigureList(this.color, this.cell);
     }
+    this.checkDoubleMove(oldCell);
   }
 
   isFinalCell() {
     return this.cell.y === this.finalCell;
+  }
+
+  checkDoubleMove(oldCell) {
+    if (this.cell.y === oldCell.y + this.direction * 2) {
+      this.cell.doubleMove = true;
+    }
+
+    // debug
+    for (const row of Board.cells) {
+      for (const cell of row) {
+        if (cell.doubleMove) {
+          console.log(cell);
+        }
+      }
+    }
   }
 
   canBeat(selectedCell) {
@@ -33,6 +49,10 @@ export default class Pawn extends Figure {
       return true;
     }
     return false;
+  }
+
+  isDoubleMove(selectedCell) {
+    return Board.getCell(selectedCell.y - this.direction, selectedCell.x).doubleMove;
   }
 
   isAvailable(selectedCell) {
@@ -46,7 +66,7 @@ export default class Pawn extends Figure {
       return false;
     }
     if (((this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell))) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
-      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell)) && !this.isKingWillBeChecked(selectedCell)))
+      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell)))))
     {
       return true;
     }
