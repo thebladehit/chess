@@ -16,7 +16,7 @@ export default class Cell {
   }
 
    moveFigure(selectedCell) {
-    if (selectedCell.doubleMove) {
+    if (selectedCell.doubleMove && this.figure.name === figureNames.PAWN) {
       const cell = Board.getCell(this.y, selectedCell.x);
       cell.figure.deleteFigure();
       cell.figure = null;
