@@ -12,17 +12,24 @@ export default class Cell {
     this.checkedBy = [];
     this.rookForCastling = null;
     this.cellForRookCastling = null;
+    this.doubleMove = false;
   }
 
    moveFigure(selectedCell) {
-     selectedCell.rookForCastling?.moveFigure(selectedCell.cellForRookCastling);
-     selectedCell.figure?.deleteFigure();
-     selectedCell.figure = this.figure;
-     this.figure.clearCheck();
-     this.figure.cell = selectedCell;
-     this.figure = null;
-     selectedCell.figure.checkKing();
-     selectedCell.figure.moveFigure();
+    if (selectedCell.doubleMove) {
+      const cell = Board.getCell(this.y, selectedCell.x);
+      cell.figure.deleteFigure();
+      cell.figure = null;
+    }
+    Board.clearDoubleMove();
+    selectedCell.rookForCastling?.moveFigure(selectedCell.cellForRookCastling);
+    selectedCell.figure?.deleteFigure();
+    selectedCell.figure = this.figure;
+    this.figure.clearCheck();
+    this.figure.cell = selectedCell;
+    this.figure = null;
+    selectedCell.figure.checkKing();
+    selectedCell.figure.moveFigure(this);
   }
 
   isEmpty(color) {

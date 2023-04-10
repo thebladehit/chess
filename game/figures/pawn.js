@@ -31,7 +31,7 @@ export default class Pawn extends Figure {
 
   checkDoubleMove(oldCell) {
     if (this.cell.y === oldCell.y + this.direction * 2) {
-      this.cell.doubleMove = true;
+      Board.getCell(this.cell.y - this.direction, this.cell.x).doubleMove = true;
     }
 
     // debug
@@ -52,7 +52,7 @@ export default class Pawn extends Figure {
   }
 
   isDoubleMove(selectedCell) {
-    return Board.getCell(selectedCell.y - this.direction, selectedCell.x).doubleMove;
+    return selectedCell.doubleMove;
   }
 
   isAvailable(selectedCell) {
@@ -65,7 +65,7 @@ export default class Pawn extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if (((this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell))) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
+    if (((this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && (this.cell.isEnemy(selectedCell) || this.isDoubleMove(selectedCell)))) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
       || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell)))))
     {
       return true;
