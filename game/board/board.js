@@ -77,7 +77,7 @@ export default class Board {
       cellHTML.classList.add('check');
     }
     cellHTML.addEventListener('click', () => {
-      if (this.selected && this.selected !== cell && this.selected.figure.canMove(cell)) {
+      if (this.selected && this.selected !== cell && cell.available) {
         this.selected.moveFigure(cell);
         this.selected = null;
         this.clearAvailable();
@@ -143,6 +143,14 @@ export default class Board {
     }
   }
 
+  static clearDoubleMove() {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        cell.doubleMove = false;
+      }
+    }
+  }
+
   static getCell(y, x) {
     return this.cells[y][x];
   }
@@ -160,7 +168,9 @@ export default class Board {
     const minY = Math.min(king.cell.y, king.cell.checkedBy[0].y);
     const maxY = Math.max(king.cell.y, king.cell.checkedBy[0].y);
 
-    if (king.cell.x === king.cell.checkedBy[0].x) {
+    if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
+      cells.push(king.cell.checkedBy[0]);
+    } else if (king.cell.x === king.cell.checkedBy[0].x) {
       for (let i = minY; i <= maxY; i++) {
         cells.push(this.getCell(i, king.cell.x));
       }
@@ -168,8 +178,6 @@ export default class Board {
       for (let i = minX; i <= maxX; i++) {
         cells.push(this.getCell(king.cell.y, i));
       }
-    } else if (king.cell.checkedBy[0].figure.name === figureNames.KNIGHT) {
-      cells.push(king.cell.checkedBy[0]);
     } else {
       const dx = king.cell.x < king.cell.checkedBy[0].x ? 1 : -1;
       const dy = king.cell.y < king.cell.checkedBy[0].y ? 1 : -1;

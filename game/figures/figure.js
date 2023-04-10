@@ -33,6 +33,12 @@ export default class Figure {
       if (selectedCell === cell) {
         return true;
       }
+      if (cell.figure?.name === figureNames.PAWN && this.name === figureNames.PAWN) {
+        const availableCell = Board.getCell(cell.y + this.direction, cell.x);
+        if (availableCell.doubleMove && availableCell === selectedCell) {
+          return true;
+        }
+      }
     }
     return false;
   }

@@ -33,22 +33,10 @@ export default class Pawn extends Figure {
     if (this.cell.y === oldCell.y + this.direction * 2) {
       Board.getCell(this.cell.y - this.direction, this.cell.x).doubleMove = true;
     }
-
-    // debug
-    for (const row of Board.cells) {
-      for (const cell of row) {
-        if (cell.doubleMove) {
-          console.log(cell);
-        }
-      }
-    }
   }
 
   canBeat(selectedCell) {
-    if (selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1)) {
-      return true;
-    }
-    return false;
+    return selectedCell.y === this.cell.y + this.direction && (selectedCell.x === this.cell.x + 1 || selectedCell.x === this.cell.x - 1);
   }
 
   isDoubleMove(selectedCell) {
@@ -66,7 +54,7 @@ export default class Pawn extends Figure {
       return false;
     }
     if (((this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && (this.cell.isEnemy(selectedCell) || this.isDoubleMove(selectedCell)))) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
-      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && (this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && this.cell.isEnemy(selectedCell)))))
+      || (this.isMyKingChecked() && (this.isAvailable(selectedCell) || (this.canBeat(selectedCell) && (this.cell.isEnemy(selectedCell) || this.isDoubleMove(selectedCell)))) && this.canProtectKing(selectedCell)))
     {
       return true;
     }
