@@ -7,12 +7,13 @@ const blackImg = '/game?=resources/img/blackPawn.png';
 
 export default class Pawn extends Figure {
   isFirstStep = true;
-  constructor(color, cell, direction, finalCell) {
+  constructor(color, cell, direction, finalCell, aisleCell) {
     super(color, cell);
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.PAWN;
     this.direction = direction;
     this.finalCell = finalCell;
+    this.aisleCell = aisleCell;
   }
 
   moveFigure(oldCell) {
@@ -40,7 +41,7 @@ export default class Pawn extends Figure {
   }
 
   isDoubleMove(selectedCell) {
-    return selectedCell.doubleMove;
+    return selectedCell.doubleMove && this.cell.y === this.aisleCell;
   }
 
   isAvailable(selectedCell) {
