@@ -32,8 +32,8 @@ export default class Rook extends Figure {
     if (!super.canMove(selectedCell)) {
       return false;
     }
-    if ((this.canBeat(selectedCell) && !this.isMyKingChecked() && !this.isKingWillBeChecked(selectedCell))
-      || (this.isMyKingChecked() && this.canProtectKing(selectedCell) && this.canBeat(selectedCell) && !this.isKingWillBeChecked(selectedCell)))
+    if (!this.isMyKingChecked() && (this.canBeat(selectedCell) && !this.isKingWillBeChecked(selectedCell))
+      || (this.isMyKingChecked() && this.canBeat(selectedCell) && !this.isKingWillBeChecked(selectedCell) && this.canProtectKing(selectedCell) ))
     {
       return true
     }
