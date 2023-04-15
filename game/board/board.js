@@ -102,7 +102,7 @@ export default class Board {
       div.addEventListener('click', () => {
         const createdFigure = figure.createFigure(color, cell);
         cell.figure = createdFigure;
-        createdFigure.checkKing()
+        createdFigure.moveFigure()
         this.drawBoard();
         list.remove();
       });

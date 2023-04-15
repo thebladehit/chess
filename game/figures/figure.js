@@ -23,6 +23,7 @@ export default class Figure {
   moveFigure() {
     this.checkKing();
     this.checkStalemate();
+    this.checkDraw();
   }
 
   clearCheck() {
@@ -95,6 +96,36 @@ export default class Figure {
       }
     }
     console.log('It is a draw!');
+  }
+
+  checkDraw() {
+    if (Board.figures.length === 2) {
+      console.log('It is a draw');
+      return;
+    }
+    if (Board.figures.length === 3) {
+      for (const figure of Board.figures) {
+        if (figure.name === figureNames.KNIGHT || figure.name === figureNames.BISHOP) {
+          console.log('It is a draw');
+          return;
+        }
+      }
+    }
+    if (Board.figures.length === 4) {
+      const bishops= [];
+      for (const figure of Board.figures) {
+        if (figure.name === figureNames.KING) {
+
+        } else if (figure.name === figureNames.BISHOP) {
+          bishops.push(figure);
+        } else {
+           return;
+        }
+      }
+      if (bishops[0].color === bishops[1].color && bishops[0].cell.color === bishops[1].cell.color) {
+        console.log('It is a draw');
+      }
+    }
   }
 
   checkMate() {
