@@ -28,7 +28,6 @@ export default class Cell {
     this.figure.clearCheck();
     this.figure.cell = selectedCell;
     this.figure = null;
-    selectedCell.figure.checkKing();
     selectedCell.figure.moveFigure(this);
   }
 

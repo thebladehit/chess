@@ -21,7 +21,8 @@ export default class Figure {
   }
 
   moveFigure() {
-
+    this.checkKing();
+    this.checkStalemate();
   }
 
   clearCheck() {
@@ -81,22 +82,34 @@ export default class Figure {
     }
   }
 
-  checkMate() {
-    const availableCells = [];
+  checkStalemate() {
     for (const figure of Board.figures) {
       if (figure.color !== this.color) {
         for (const row of Board.cells) {
           for (const cell of row) {
             if (figure.canMove(cell)) {
-              availableCells.push(cell);
+              return;
             }
           }
         }
       }
     }
-    if (availableCells.length === 0) {
-      console.log(`${this.color} win`);
+    console.log('It is a draw!');
+  }
+
+  checkMate() {
+    for (const figure of Board.figures) {
+      if (figure.color !== this.color) {
+        for (const row of Board.cells) {
+          for (const cell of row) {
+            if (figure.canMove(cell)) {
+              return;
+            }
+          }
+        }
+      }
     }
+    console.log(`${this.color} win`);
   }
 
   isMyKingChecked() {
