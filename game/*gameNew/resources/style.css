@@ -1,0 +1,62 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.board {
+
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.white {
+    background: antiquewhite;
+}
+
+.black {
+    background: #333333;
+}
+
+.figure {
+    width: 60px;
+    height: 60px;
+    position: relative;
+}
+
+.selected {
+    background: rgba(151, 236, 60, 0.68);
+}
+
+.available {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #b7b7b7;
+}
+
+.availableFigure {
+    background: rgba(245, 231, 81, 0.32);
+}
+
+.check {
+    background: #ff4a4a;
+}
+
+.listFigure {
+    position: absolute;
+    display: flex;
+}
+
+.listFigure div {
+    padding: 5%;
+}
