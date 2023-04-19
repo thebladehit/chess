@@ -2,7 +2,7 @@ import Figure from "/game?=*gameNew/figures/figure.js";
 import Cell from "/game?=*gameNew/board/cell.js";
 import { colors } from "/game?=*gameNew/resources/colors.js";
 
-export class Board {
+export default class Board {
   constructor(cellNumberHorizontal, cellNumberVertical) {
     this.figures = [];
     this.cells = this.createBoard(cellNumberHorizontal, cellNumberVertical);
@@ -36,15 +36,10 @@ export class Board {
         color = firstColor;
       }
       for (let x = 0; x < position.cellNumberHorizontal; x++) {
-        console.log(splitedStartPosition[y][x]); // console
         const figure = new Figure(color, splitedStartPosition[y][x]);
         this.cells[y][x].figure = figure;
         this.figures.push(figure);
       }
     }
   }
-}
-
-export class BoardHtml {
-
 }
