@@ -12,7 +12,7 @@ export default class Pawn extends Figure {
     this.img = color === colors.WHITE ? whiteImg : blackImg;
     this.name = figureNames.PAWN;
     this.direction = direction;
-    this.finalCell = finalCell;
+    this.finalCell = finalCell; // to board
     this.aisleCell = aisleCell;
   }
 

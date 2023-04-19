@@ -64,6 +64,7 @@ export default class Figure {
     return false;
   }
 
+  // move to cell
   isHereKing(cells) {
     for (const cell of cells) {
       if (cell.figure?.name === figureNames.KING) {

@@ -21,6 +21,7 @@ export default class Board {
   static figures = [];
   static kings = [];
   static board = document.querySelector('.board');
+  static currentPlayer = colors.WHITE;
 
   static createBoard() {
     for (let i = 0; i < 8; i++) {
@@ -82,7 +83,8 @@ export default class Board {
         this.selected = null;
         this.clearAvailable();
         this.drawBoard();
-      } else if (cell.figure) {
+        this.changePlayerMove();
+      } else if (cell.figure && this.currentPlayer === cell.figure.color) {
         this.selected = cell;
         this.clearRookForCastling();
         this.highlightCells(cell);
@@ -90,6 +92,10 @@ export default class Board {
       }
     });
     return cellHTML;
+  }
+
+  static changePlayerMove() {
+    this.currentPlayer = this.currentPlayer === colors.WHITE ? colors.BLACK : colors.WHITE;
   }
 
   static createFigureListHtml(color, cell) {
@@ -280,6 +286,7 @@ export default class Board {
   }
 
   static addBishop(firstColor, secondColor) {
+    // const coords = [[0,2], ]
     new Bishop(secondColor, this.getCell(0, 2));
     new Bishop(secondColor, this.getCell(0, 5));
     new Bishop(firstColor, this.getCell(7, 2));
