@@ -26,10 +26,13 @@ export default class Board {
 
   addFigure(position, firstColor, secondColor) {
     let color = secondColor;
-    const splitedStartPosition = position.startPos.split('/');
+    let splitedStartPosition = position.startPos.split('/');
+    if (position.forColor !== firstColor) {
+      splitedStartPosition = splitedStartPosition.map(row => row.split('').reverse().join(''));
+    }
     for (let y = 0; y < position.cellNumberVertical; y++) {
       console.log(splitedStartPosition[y]);
-      if (splitedStartPosition[y] === 'null') {
+      if (splitedStartPosition[y] === 'null' || splitedStartPosition[y] === 'llun') {
         continue;
       }
       if (this.figures.length === position.figureNumberOnePlayer) {

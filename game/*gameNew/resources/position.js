@@ -1,5 +1,8 @@
+import { colors } from "/game?=*gameNew/resources/colors.js";
+
 export const defaultChessPosition = {
-  startPos: 'rkbqkbnr/pppppppp/null/null/null/null/pppppppp/rkbqkbkr',
+  startPos: 'rnbqkbnr/pppppppp/null/null/null/null/pppppppp/rnbqkbnr',
+  forColor: colors.WHITE,
   cellNumberHorizontal: 8,
   cellNumberVertical: 8,
   figureNumberOnePlayer: 16

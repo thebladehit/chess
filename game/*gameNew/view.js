@@ -19,6 +19,16 @@ export default class View {
   createCellHtml(cell) {
     const cellHTML = document.createElement('div');
     cellHTML.className = `col ${cell.color}`;
+    if (cell.figure) {
+      cellHTML.append(this.createFigureImg(cell));
+    }
     return cellHTML;
+  }
+
+  createFigureImg(cell) {
+    const img = document.createElement('img');
+    img.classList.add('figure');
+    img.src = cell.figure.img;
+    return img;
   }
 }
