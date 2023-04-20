@@ -2,6 +2,7 @@ export default class View {
   constructor(element, game) {
     this.element = element;
     this.game = game;
+    this.selected = null;
   }
 
   drawBoard() {
@@ -24,16 +25,25 @@ export default class View {
       cellHTML.append(this.createFigureImg(cell));
     }
     if (cell.available) {
-      const available = document.createElement('div');
       if (cell.figure) {
         cellHTML.classList.add('availableFigure');
       } else {
+        const available = document.createElement('div');
         available.classList.add('available');
+        cellHTML.append(available);
       }
-      cellHTML.append(available);
+    }
+    if (this.selected === cell) {
+      cellHTML.classList.add('selected');
     }
     cellHTML.addEventListener('click', () => {
-      if (cell.figure) {
+      if (this.selected && this.selected !== cell && cell.available) {
+        this.game.moveFigure(this.selected, cell);
+        this.selected = null;
+        this.game.clearAvailable();
+        this.drawBoard();
+      } else if (cell.figure) {
+        this.selected = cell;
         this.game.checkAvailableCells(cell);
         this.drawBoard()
       }
