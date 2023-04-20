@@ -1,11 +1,12 @@
 export default class View {
-  constructor(element) {
+  constructor(element, game) {
     this.element = element;
+    this.game = game;
   }
 
-  drawBoard(cells) {
+  drawBoard() {
     this.element.innerHTML = '';
-    for (const row of cells) {
+    for (const row of this.game.board.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
       for (const cell of row) {
@@ -22,6 +23,21 @@ export default class View {
     if (cell.figure) {
       cellHTML.append(this.createFigureImg(cell));
     }
+    if (cell.available) {
+      const available = document.createElement('div');
+      if (cell.figure) {
+        cellHTML.classList.add('availableFigure');
+      } else {
+        available.classList.add('available');
+      }
+      cellHTML.append(available);
+    }
+    cellHTML.addEventListener('click', () => {
+      if (cell.figure) {
+        this.game.checkAvailableCells(cell);
+        this.drawBoard()
+      }
+    });
     return cellHTML;
   }
 

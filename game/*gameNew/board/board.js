@@ -28,11 +28,10 @@ export default class Board {
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
-      splitedStartPosition = splitedStartPosition.map(row => row.split('').reverse().join(''));
+      splitedStartPosition = splitedStartPosition.map(row => row === 'null' ? row : row.split('').reverse().join(''));
     }
     for (let y = 0; y < position.cellNumberVertical; y++) {
-      console.log(splitedStartPosition[y]);
-      if (splitedStartPosition[y] === 'null' || splitedStartPosition[y] === 'llun') {
+      if (splitedStartPosition[y] === 'null') {
         continue;
       }
       if (this.figures.length === position.figureNumberOnePlayer) {
