@@ -1,25 +1,25 @@
 const figuresImg = {
-  r: {
+  rook: {
     white: '/game?=*gameNew/resources/img/whiteRook.png',
     black: '/game?=*gameNew/resources/img/blackRook.png'
   },
-  n: {
+  knight: {
     white: '/game?=*gameNew/resources/img/whiteKnight.png',
     black: '/game?=*gameNew/resources/img/blackKnight.png'
   },
-  b: {
+  bishop: {
     white: '/game?=*gameNew/resources/img/whiteBishop.png',
     black: '/game?=*gameNew/resources/img/blackBishop.png'
   },
-  q: {
+  queen: {
     white: '/game?=*gameNew/resources/img/whiteQueen.png',
     black: '/game?=*gameNew/resources/img/blackQueen.png',
   },
-  k: {
+  king: {
     white: '/game?=*gameNew/resources/img/whiteKing.png',
     black: '/game?=*gameNew/resources/img/blackKing.png',
   },
-  p: {
+  pawn: {
     white: '/game?=*gameNew/resources/img/whitePawn.png',
     black: '/game?=*gameNew/resources/img/blackPawn.png',
   }

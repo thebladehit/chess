@@ -1,6 +1,7 @@
 import Figure from "/game?=*gameNew/figures/figure.js";
 import Cell from "/game?=*gameNew/board/cell.js";
 import { colors } from "/game?=*gameNew/resources/colors.js";
+import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
 
 export default class Board {
   constructor(cellNumberHorizontal, cellNumberVertical) {
@@ -38,10 +39,41 @@ export default class Board {
         color = firstColor;
       }
       for (let x = 0; x < position.cellNumberHorizontal; x++) {
-        const figure = new Figure(color, splitedStartPosition[y][x]);
+        const figure = new Figure(color, figureTypes[splitedStartPosition[y][x]]);
         this.cells[y][x].figure = figure;
         this.figures.push(figure);
       }
     }
+  }
+
+  getCell(y, x) {
+    return this.cells[y][x];
+  }
+
+  isEmpty(cell, color) {
+    if (cell.figure?.type === figureTypes.k && cell.figure?.color !== color) {
+      return true;
+    }
+    if (cell.figure) {
+      return false;
+    }
+    return true;
+  }
+
+  isEmptyVertical(fromCell, targetCell) {
+    // if (this === selectedCell) {
+    //   return false;
+    // }
+    if (fromCell.x !== targetCell.x) {
+      return false;
+    }
+    const min = Math.min(fromCell.y, targetCell.y);
+    const max = Math.max(fromCell.y, targetCell.y);
+    for (let i = min + 1; i < max; i++) {
+      if (!this.isEmpty(this.getCell(i, fromCell.x), fromCell.figure.color)) {
+        return false;
+      }
+    }
+    return true;
   }
 }

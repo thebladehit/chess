@@ -40,7 +40,7 @@ export default class View {
       if (this.selected && this.selected !== cell && cell.available) {
         this.game.moveFigure(this.selected, cell);
         this.selected = null;
-        this.game.clearAvailable();
+        this.game.clearAvailableCells();
         this.drawBoard();
       } else if (cell.figure) {
         this.selected = cell;

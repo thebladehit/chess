@@ -1,3 +1,5 @@
+import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
+
 export default class Game {
   constructor(board) {
     this.board = board;
@@ -11,7 +13,7 @@ export default class Game {
     }
   }
 
-  clearAvailable() {
+  clearAvailableCells() {
     for (const row of this.board.cells) {
       for (const cell of row) {
         cell.available = false;
@@ -28,7 +30,7 @@ export default class Game {
     if (fromCell.figure.color === targetCell.figure?.color) {
       return false;
     }
-    if (targetCell.figure?.type === 'k') {
+    if (targetCell.figure?.type === figureTypes.k) {
       return false;
     }
     return true;
