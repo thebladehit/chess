@@ -2,7 +2,15 @@ import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
 
 const figureMoves = {
   rook: {
-    directions: [[1,0], [-1, 0], [0, 1], [0, -1]],
+    directions: [[1,0], [-1,0], [0,1], [0,-1]],
+    range: Infinity
+  },
+  bishop: {
+    directions: [[1,1], [1,-1], [-1,1], [-1,-1]],
+    range: Infinity
+  },
+  queen: {
+    directions: [[1,1], [1,-1], [-1,1], [-1,-1], [1,0], [-1,0], [0,1], [0,-1]],
     range: Infinity
   }
 }
@@ -57,6 +65,10 @@ export default class Game {
          if (this.board.isEmptyHorizontal(fromCell, targetCell)) {
            return true;
          }
+        } else {
+          if (this.board.isEmptyDiagonal(fromCell, targetCell)) {
+            return true;
+          }
         }
       }
     }

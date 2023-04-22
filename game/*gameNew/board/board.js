@@ -51,9 +51,9 @@ export default class Board {
   }
 
   isEmpty(cell, color) {
-    if (cell.figure?.type === figureTypes.k && cell.figure?.color !== color) {
-      return true;
-    }
+    // if (cell.figure?.type === figureTypes.k && cell.figure?.color === color) {
+    //   return true;
+    // }
     if (cell.figure) {
       return false;
     }
@@ -88,6 +88,25 @@ export default class Board {
     const max = Math.max(fromCell.x, targetCell.x);
     for (let i = min + 1; i < max; i++) {
       if (!this.isEmpty(this.getCell(fromCell.y, i), fromCell.figure.color)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isEmptyDiagonal(fromCell, targetCell) {
+    // if (this === selectedCell) {
+    //   return false;
+    // }
+    const absX = Math.abs(fromCell.x - targetCell.x);
+    const absY = Math.abs(fromCell.y - targetCell.y);
+    if (absY !== absX) {
+      return false;
+    }
+    const dy = targetCell.y > fromCell.y ? 1 : -1;
+    const dx = targetCell.x > fromCell.x ? 1 : -1;
+    for (let i = 1; i < absY; i++) {
+      if (!this.isEmpty(this.getCell(fromCell.y + i * dy, fromCell.x + i * dx), fromCell.figure.color)) {
         return false;
       }
     }
