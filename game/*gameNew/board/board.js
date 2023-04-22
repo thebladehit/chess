@@ -76,4 +76,21 @@ export default class Board {
     }
     return true;
   }
+
+  isEmptyHorizontal(fromCell, targetCell) {
+    // if (this === selectedCell) {
+    //   return false;
+    // }
+    if (fromCell.y !== targetCell.y) {
+      return false;
+    }
+    const min = Math.min(fromCell.x, targetCell.x);
+    const max = Math.max(fromCell.x, targetCell.x);
+    for (let i = min + 1; i < max; i++) {
+      if (!this.isEmpty(this.getCell(fromCell.y, i), fromCell.figure.color)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

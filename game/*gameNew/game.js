@@ -1,5 +1,12 @@
 import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
 
+const figureMoves = {
+  rook: {
+    directions: [[1,0], [-1, 0], [0, 1], [0, -1]],
+    range: Infinity
+  }
+}
+
 export default class Game {
   constructor(board) {
     this.board = board;
@@ -33,6 +40,26 @@ export default class Game {
     if (targetCell.figure?.type === figureTypes.k) {
       return false;
     }
-    return true;
+    const deltaX = fromCell.x - targetCell.x;
+    const deltaY = fromCell.y - targetCell.y;
+    if (deltaX > figureMoves[fromCell.figure.type].range || deltaY > figureMoves[fromCell.figure.type].range) {
+      return false;
+    }
+    const directionX = deltaX === 0 ? 0 : deltaX / Math.abs(deltaX);
+    const directionY = deltaY === 0 ? 0 : deltaY / Math.abs(deltaY);
+    for (const direction of figureMoves[fromCell.figure.type].directions) {
+      if (direction[0] === directionY && direction[1] === directionX) {
+        if (deltaX === 0) {
+          if (this.board.isEmptyVertical(fromCell, targetCell)) {
+            return true;
+          }
+        } else if (deltaY === 0) {
+         if (this.board.isEmptyHorizontal(fromCell, targetCell)) {
+           return true;
+         }
+        }
+      }
+    }
+    return false;
   }
 }
