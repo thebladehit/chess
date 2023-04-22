@@ -30,5 +30,6 @@ export default class Figure {
     this.color = color;
     this.type = type;
     this.img = figuresImg[type][color];
+    this.isFirstStep = true;
   }
 }

@@ -26,6 +26,7 @@ export default class Board {
   }
 
   addFigure(position, firstColor, secondColor) {
+    this.setDirectionForPawn(firstColor);
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
@@ -43,6 +44,13 @@ export default class Board {
         this.cells[y][x].figure = figure;
         this.figures.push(figure);
       }
+    }
+  }
+
+  setDirectionForPawn(firstColor) {
+    this.directionForPawn = {
+      white: firstColor === colors.WHITE ? -1 : 1,
+      black: firstColor === colors.BLACK ? -1 : 1
     }
   }
 
