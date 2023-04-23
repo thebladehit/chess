@@ -52,16 +52,19 @@ export default class Game {
     }
   }
 
+  clearCheck(color) {
+    this.checkedBy = [];
+    this.checkedKingColor = null;
+    this.board.getMyKingCell(color).checked = false;
+  }
+
   isUnderAttack(targetCell, color) {
     return this.getAttackingFigureCells(targetCell, color).length !== 0;
   }
 
   isMyKingChecked(color) {
     const kingCell = this.board.getMyKingCell(color);
-    if (this.isUnderAttack(kingCell, color)) {
-      return true;
-    }
-    return false;
+    return this.isUnderAttack(kingCell, color);
   }
 
   isHereKing(cells) {
@@ -75,13 +78,11 @@ export default class Game {
 
   isKingWillBeChecked(fromCell, targetCell, color) {
     const attackingFigureCells = this.getAttackingFigureCells(fromCell, color);
-    console.log(attackingFigureCells);
     for (const attackingFigureCell of attackingFigureCells) {
       if (attackingFigureCell.figure.type === figureTypes.k || attackingFigureCell.figure.type === figureTypes.p || attackingFigureCell.figure.type === figureTypes.k) {
         continue;
       }
       const attackedCells = this.getFutureAttackedCells(fromCell, attackingFigureCell);// here stopped
-      console.log(attackedCells);
       if (this.isHereKing(attackedCells)) {
         for (const cell of attackedCells) {
           if (cell === targetCell) {
@@ -224,6 +225,7 @@ export default class Game {
   }
 
   moveFigure(fromCell, targetCell) {
+    this.clearCheck(fromCell.figure.color);
     targetCell.figure = fromCell.figure;
     fromCell.figure = null;
     targetCell.figure.isFirstStep = false;
@@ -253,7 +255,7 @@ export default class Game {
       }
     } else if (fromCell.figure.type === figureTypes.k) {
       for (const direction of figureMoves[fromCell.figure.type]) {
-        if (direction(deltaY, deltaX)) {
+        if (direction(deltaY, deltaX) && !this.isUnderAttack(fromCell, fromCell.figure.color)) {
           return true;
         }
       }
