@@ -68,6 +68,13 @@ export default class Board {
     return true;
   }
 
+  isEnemy(fromCell, targetCell) {
+    if (targetCell.figure) {
+      return fromCell.figure.color !== targetCell.figure.color;
+    }
+    return false;
+  }
+
   isEmptyVertical(fromCell, targetCell) {
     // if (this === selectedCell) {
     //   return false;

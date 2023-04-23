@@ -1,27 +1,33 @@
 import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
 
 const figureMoves = {
-  rook: {
-    directions: [[1,0], [-1,0], [0,1], [0,-1]],
-    range: Infinity
-  },
-  bishop: {
-    directions: [[1,1], [1,-1], [-1,1], [-1,-1]],
-    range: Infinity
-  },
-  queen: {
-    directions: [[1,1], [1,-1], [-1,1], [-1,-1], [1,0], [-1,0], [0,1], [0,-1]],
-    range: Infinity
-  },
-  king: {
-    directions: [[1,1], [1,-1], [-1,1], [-1,-1], [1,0], [-1,0], [0,1], [0,-1]],
-    range: 1
-  },
+  rook: [
+    (deltaY, deltaX) => Infinity >= deltaX && deltaY === 0,
+    (deltaY, deltaX) => Infinity >= deltaY && deltaX === 0
+  ],
+  bishop: [
+    (deltaY, deltaX) => deltaX === deltaY
+  ],
+  queen: [
+    (deltaY, deltaX) => Infinity >= deltaY && deltaX === 0,
+    (deltaY, deltaX) => Infinity >= deltaX && deltaY === 0,
+    (deltaY, deltaX) => deltaX === deltaY
+  ],
+  king: [
+    (deltaY, deltaX) => deltaX === 1 && deltaY === 1,
+    (deltaY, deltaX) => 1 === deltaX && deltaY === 0,
+    (deltaY, deltaX) => 1 === deltaY && deltaX === 0
+  ],
   pawn: {
-    directions: [undefined,0],
-    beat: [[undefined, 1], [undefined, -1]]
-  }
-}
+    move: (fromCell, targetCell, direction, deltaX) => fromCell.y + direction === targetCell.y && deltaX === 0,
+    doubleMove: (fromCell, targetCell, direction, deltaX) => fromCell.figure.isFirstStep && fromCell.y + direction * 2 === targetCell.y && deltaX === 0,
+    beatMove: (fromCell, targetCell, direction, deltaX) => fromCell.y + direction === targetCell.y && deltaX === 1
+  },
+  knight: [
+    (deltaY, deltaX) => deltaY === 2 && deltaX === 1,
+    (deltaY, deltaX) => deltaY === 1 && deltaX === 2
+  ]
+};
 
 export default class Game {
   constructor(board) {
@@ -50,30 +56,37 @@ export default class Game {
     targetCell.figure.isFirstStep = false;
   }
 
-  canMove(fromCell, targetCell) {
-    if (fromCell.figure.color === targetCell.figure?.color) {
-      return false;
-    }
-    if (targetCell.figure?.type === figureTypes.k) {
-      return false;
-    }
-    const deltaX = targetCell.x - fromCell.x;
-    const deltaY = targetCell.y - fromCell.y;
-    const directionX = deltaX === 0 ? 0 : deltaX / Math.abs(deltaX);
-    const directionY = deltaY === 0 ? 0 : deltaY / Math.abs(deltaY);
+  isAvailable(fromCell, targetCell) {
+    const deltaX = Math.abs(targetCell.x - fromCell.x);
+    const deltaY = Math.abs(targetCell.y - fromCell.y);
 
     if (fromCell.figure.type === figureTypes.p) {
-      if ((fromCell.y + this.board.directionForPawn[fromCell.figure.color] === targetCell.y && figureMoves[fromCell.figure.type].directions[1] === deltaX && this.board.isEmpty(targetCell))
-      || (fromCell.figure.isFirstStep && fromCell.y + this.board.directionForPawn[fromCell.figure.color] * 2 === targetCell.y) && figureMoves[fromCell.figure.type].directions[1] === deltaX && this.board.isEmpty(targetCell)) {
+      const direction = this.board.directionForPawn[fromCell.figure.color];
+      if (((figureMoves[fromCell.figure.type].move(fromCell, targetCell, direction, deltaX) || (figureMoves[fromCell.figure.type].doubleMove(fromCell, targetCell, direction, deltaX) && this.board.isEmpty(this.board.getCell(targetCell.y - direction, targetCell.x)))) && this.board.isEmpty(targetCell))
+        || (figureMoves[fromCell.figure.type].beatMove(fromCell, targetCell, direction, deltaX) && this.board.isEnemy(fromCell, targetCell))) {
         return true;
       }
-    } else {
-      if (Math.abs(deltaX) > figureMoves[fromCell.figure.type].range || Math.abs(deltaY) > figureMoves[fromCell.figure.type].range) {
-        return false;
+      return false;
+    } else if (fromCell.figure.type === figureTypes.r) {
+      for (const direction of figureMoves[fromCell.figure.type]) {
+        if (direction(deltaY, deltaX)) {
+          if (this.board.isEmptyHorizontal(fromCell, targetCell)) {
+            return true;
+          }
+          if (this.board.isEmptyVertical(fromCell, targetCell)) {
+            return true;
+          }
+        }
       }
-
-      for (const direction of figureMoves[fromCell.figure.type].directions) {
-        if (direction[0] === directionY && direction[1] === directionX) {
+    } else if (fromCell.figure.type === figureTypes.k) {
+      for (const direction of figureMoves[fromCell.figure.type]) {
+        if (direction(deltaY, deltaX)) {
+          return true;
+        }
+      }
+    } else {
+      for (const direction of figureMoves[fromCell.figure.type]) {
+        if (direction(deltaY, deltaX)) {
           if (deltaX === 0) {
             if (this.board.isEmptyVertical(fromCell, targetCell)) {
               return true;
@@ -82,16 +95,28 @@ export default class Game {
             if (this.board.isEmptyHorizontal(fromCell, targetCell)) {
               return true;
             }
-          } else {
+          } else if (deltaY === deltaX){
             if (this.board.isEmptyDiagonal(fromCell, targetCell)) {
               return true;
             }
+          } else {
+            return true;
           }
         }
       }
     }
+  }
 
-
+  canMove(fromCell, targetCell) {
+    if (fromCell.figure.color === targetCell.figure?.color) {
+      return false;
+    }
+    if (targetCell.figure?.type === figureTypes.k) {
+      return false;
+    }
+    if (this.isAvailable(fromCell, targetCell)) {
+      return true;
+    }
     return false;
   }
 }
