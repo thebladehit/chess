@@ -32,6 +32,8 @@ const figureMoves = {
 export default class Game {
   constructor(board) {
     this.board = board;
+    this.checkedKingColor = null;
+    this.checkedBy = [];
   }
 
   checkAvailableCells(fromCell) {
@@ -50,10 +52,39 @@ export default class Game {
     }
   }
 
+  checkKing(color) {
+    const enemyKingCell = this.board.getEnemyKingCell(color);
+    console.log(enemyKingCell)
+    const attackingFigures = this.getAttackingFigures(enemyKingCell, enemyKingCell.figure.color);
+    if (attackingFigures.length !== 0) {
+      this.checkedKingColor = enemyKingCell.figure.color;
+      this.checkedBy = attackingFigures;
+      enemyKingCell.checked = true;
+      // this.checkMate(); // add later
+    }
+  }
+
+  getAttackingFigures(targetCell, color) {
+    const figures = [];
+    for (const row of this.board.cells) {
+      for (const cell of row) {
+        if (cell.figure) {
+          if (color !== cell.figure.color) {
+            if (this.isAvailable(cell, targetCell)) {
+              figures.push(cell); // return cells maybe figure?
+            }
+          }
+        }
+      }
+    }
+    return figures;
+  }
+
   moveFigure(fromCell, targetCell) {
     targetCell.figure = fromCell.figure;
     fromCell.figure = null;
     targetCell.figure.isFirstStep = false;
+    this.checkKing(targetCell.figure.color);
   }
 
   isAvailable(fromCell, targetCell) {
@@ -66,7 +97,6 @@ export default class Game {
         || (figureMoves[fromCell.figure.type].beatMove(fromCell, targetCell, direction, deltaX) && this.board.isEnemy(fromCell, targetCell))) {
         return true;
       }
-      return false;
     } else if (fromCell.figure.type === figureTypes.r) {
       for (const direction of figureMoves[fromCell.figure.type]) {
         if (direction(deltaY, deltaX)) {
@@ -105,6 +135,7 @@ export default class Game {
         }
       }
     }
+    return false;
   }
 
   canMove(fromCell, targetCell) {

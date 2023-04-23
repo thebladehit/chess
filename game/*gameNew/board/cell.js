@@ -5,10 +5,9 @@ export default class Cell {
     this.color = color;
     this.figure = null;
     this.available = false;
-    this.check = false;
-    this.checkedBy = [];
-    this.rookForCastling = null;
-    this.cellForRookCastling = null;
-    this.doubleMove = false;
+    this.checked = false;
+    // this.rookForCastling = null;
+    // this.cellForRookCastling = null;
+    // this.doubleMove = false;
   }
 }

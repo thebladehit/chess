@@ -54,6 +54,18 @@ export default class Board {
     }
   }
 
+  getMyKingCell(color) {
+    for (const row of this.cells) {
+      for (const cell of row) {
+        if (cell.figure?.color === color && cell.figure?.type === figureTypes.k) return cell;
+      }
+    }
+  }
+
+  getEnemyKingCell(color) {
+    return color === colors.WHITE ? this.getMyKingCell(colors.BLACK) : this.getMyKingCell(colors.WHITE);
+  }
+
   getCell(y, x) {
     return this.cells[y][x];
   }

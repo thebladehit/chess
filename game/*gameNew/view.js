@@ -36,6 +36,9 @@ export default class View {
     if (this.selected === cell) {
       cellHTML.classList.add('selected');
     }
+    if (cell.checked) {
+      cellHTML.classList.add('check');
+    }
     cellHTML.addEventListener('click', () => {
       if (this.selected && this.selected !== cell && cell.available) {
         this.game.moveFigure(this.selected, cell);
