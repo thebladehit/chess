@@ -157,6 +157,56 @@ export default class Game {
     return cells;
   }
 
+  getAttackedCellsToKing(color) {
+    const cells = [];
+    const kingCell = this.board.getMyKingCell(color);
+
+    if (this.checkedBy.length > 1) {
+      return [];
+    }
+
+    const minX = Math.min(kingCell.x, this.checkedBy[0].x);
+    const maxX = Math.max(kingCell.x, this.checkedBy[0].x);
+    const minY = Math.min(kingCell.y, this.checkedBy[0].y);
+    const maxY = Math.max(kingCell.y, this.checkedBy[0].y);
+
+    if (this.checkedBy[0].figure.type === figureTypes.n) {
+      cells.push(this.checkedBy[0]);
+    } else if (kingCell.x === this.checkedBy[0].x) {
+      for (let i = minY; i <= maxY; i++) {
+        cells.push(this.board.getCell(i, kingCell.x));
+      }
+    } else if (kingCell.y === this.checkedBy[0].y) {
+      for (let i = minX; i <= maxX; i++) {
+        cells.push(this.board.getCell(kingCell.y, i));
+      }
+    } else {
+      const dx = kingCell.x < this.checkedBy[0].x ? 1 : -1;
+      const dy = kingCell.y < this.checkedBy[0].y ? 1 : -1;
+      const abs = Math.abs(kingCell.y - this.checkedBy[0].y);
+
+      for (let i = 1; i <= abs; i++) {
+        cells.push(this.board.getCell(kingCell.y + i * dy, kingCell.x + i * dx));
+      }
+    }
+    return cells;
+  }
+
+  canProtectKing(fromCell, targetCell, color) {
+    for (const cell of this.getAttackedCellsToKing(color)) {
+      if (targetCell === cell) {
+        return true;
+      }
+      // if (cell.figure?.type === figureTypes.p && fromCell.name === figureTypes.p) {
+      //   const availableCell = this.board.getCell(cell.y + this.direction, cell.x);
+      //   if (availableCell.doubleMove && availableCell === selectedCell) {
+      //     return true;
+      //   }
+      // }
+    }
+    return false;
+  }
+
   getAttackingFigureCells(targetCell, color) {
     const cells = [];
     for (const row of this.board.cells) {
@@ -238,7 +288,9 @@ export default class Game {
     if (targetCell.figure?.type === figureTypes.k) {
       return false;
     }
-    if (!this.isMyKingChecked(fromCell.figure.color) && this.isAvailable(fromCell, targetCell) && !this.isKingWillBeChecked(fromCell, targetCell, fromCell.figure.color)) {
+    if ((!this.isMyKingChecked(fromCell.figure.color) && this.isAvailable(fromCell, targetCell) && !this.isKingWillBeChecked(fromCell, targetCell, fromCell.figure.color))
+      || (this.isMyKingChecked(fromCell.figure.color) && this.isAvailable(fromCell, targetCell) && !this.isKingWillBeChecked(fromCell, targetCell, fromCell.figure.color) && this.canProtectKing(fromCell, targetCell, fromCell.figure.color))
+    ) {
       return true;
     }
     return false;
