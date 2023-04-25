@@ -14,11 +14,12 @@ export default class Board {
     for (let i = 0; i < cellNumberVertical; i++) {
       const row = [];
       for (let j = 0; j < cellNumberHorizontal; j++) {
-        if ((i + j) % 2 === 0) {
-          row.push(new Cell(i, j, colors.WHITE));
-        } else {
-          row.push(new Cell(i, j, colors.BLACK));
-        }
+        // if ((i + j) % 2 === 0) {
+        //   row.push(new Cell(i, j, colors.WHITE));
+        // } else {
+        //   row.push(new Cell(i, j, colors.BLACK));
+        // }
+        row.push(new Cell(i, j, (i + j) % 2 === 0 ? colors.WHITE : colors.BLACK))
       }
       cells.push(row);
     }
@@ -30,7 +31,11 @@ export default class Board {
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
-      splitedStartPosition = splitedStartPosition.map(row => row === 'null' ? row : row.split('').reverse().join(''));
+      splitedStartPosition = splitedStartPosition
+        .map(row => row === 'null' ? row : row
+          .split('')
+          .reverse()
+          .join(''));
     }
     for (let y = 0; y < position.cellNumberVertical; y++) {
       if (splitedStartPosition[y] === 'null') {
@@ -48,10 +53,8 @@ export default class Board {
   }
 
   setDirectionForPawn(firstColor) {
-    this.directionForPawn = {
-      white: firstColor === colors.WHITE ? -1 : 1,
-      black: firstColor === colors.BLACK ? -1 : 1
-    }
+    const white = firstColor === colors.WHITE ? -1 : 1;
+    this.directionForPawn = { white, black: -white };
   }
 
   getMyKingCell(color) {
