@@ -47,8 +47,9 @@ export default class View {
         this.drawBoard();
       } else if (cell.figure) {
         this.selected = cell;
+        this.game.clearRookForCastling();
         this.game.checkAvailableCells(cell);
-        this.drawBoard()
+        this.drawBoard();
       }
     });
     return cellHTML;

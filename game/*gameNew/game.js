@@ -58,6 +58,23 @@ export default class Game {
     this.board.getMyKingCell(color).checked = false;
   }
 
+  clearRookForCastling() {
+    for (const row of this.board.cells) {
+      for (const cell of row) {
+        cell.rookCellForCastling = null;
+        cell.cellForRookCastling = null;
+      }
+    }
+  }
+
+  clearDoubleMove() {
+    for (const row of this.board.cells) {
+      for (const cell of row) {
+        cell.doubleMove = false;
+      }
+    }
+  }
+
   deleteFigure(figure) {
     const inx = this.board.figures.indexOf(figure);
     this.board.figures.splice(inx, 1);
@@ -108,6 +125,13 @@ export default class Game {
       this.checkedBy = attackingFigureCells;
       enemyKingCell.checked = true;
       // this.checkMate(); // add later
+    }
+  }
+
+  checkDoubleMove(fromCell, targetCell) {
+    const direction = this.board.directionForPawn[fromCell.figure.color];
+    if (targetCell.y === fromCell.y + direction * 2) {
+      this.board.getCell(targetCell.y - direction, fromCell.x).doubleMove = true;
     }
   }
 
@@ -203,12 +227,13 @@ export default class Game {
       if (targetCell === cell) {
         return true;
       }
-      // if (cell.figure?.type === figureTypes.p && fromCell.name === figureTypes.p) {
-      //   const availableCell = this.board.getCell(cell.y + this.direction, cell.x);
-      //   if (availableCell.doubleMove && availableCell === selectedCell) {
-      //     return true;
-      //   }
-      // }
+      if (cell.figure?.type === figureTypes.p && fromCell.figure.type === figureTypes.p) {
+        const direction = this.board.directionForPawn[fromCell.figure.color];;
+        const availableCell = this.board.getCell(cell.y + direction, cell.x);
+        if (availableCell.doubleMove && availableCell === targetCell) {
+          return true;
+        }
+      }
     }
     return false;
   }
@@ -220,13 +245,12 @@ export default class Game {
         if (cell.figure) {
           if (color !== cell.figure.color) {
             if (this.canBeat(cell, targetCell)) {
-              cells.push(cell); // return cells maybe figure?
+              cells.push(cell);
             }
           }
         }
       }
     }
-    console.log(cells);
     return cells;
   }
 
@@ -250,9 +274,18 @@ export default class Game {
     if (targetCell.figure) {
       this.deleteFigure(targetCell.figure);
     }
+    if (targetCell.doubleMove && fromCell.figure.type === figureTypes.p) {
+      const cell = this.board.getCell(fromCell.y, targetCell.x);
+      this.deleteFigure(cell.figure);
+      cell.figure = null;
+    }
+    this.clearDoubleMove();
+    if (fromCell.figure.type === figureTypes.p) {
+      this.checkDoubleMove(fromCell, targetCell);
+    }
     targetCell.figure = fromCell.figure;
+    fromCell.figure.isFirstStep = false;
     fromCell.figure = null;
-    targetCell.figure.isFirstStep = false;
     this.checkKing(targetCell.figure.color);
   }
 
@@ -301,15 +334,16 @@ export default class Game {
 
     if (fromCell.figure.type === figureTypes.p) {
       const direction = this.board.directionForPawn[fromCell.figure.color];
+      const aisleCell = this.board.aisleCellForPawn[fromCell.figure.color];
       if (((figureMoves[fromCell.figure.type].move(fromCell, targetCell, direction, deltaX) || (figureMoves[fromCell.figure.type].doubleMove(fromCell, targetCell, direction, deltaX) && this.board.isEmpty(this.board.getCell(targetCell.y - direction, targetCell.x)))) && this.board.isEmpty(targetCell))
-        || (this.canBeat(fromCell, targetCell) && this.board.isEnemy(fromCell, targetCell))) {
+        || (this.canBeat(fromCell, targetCell) && (this.board.isEnemy(fromCell, targetCell) || targetCell.doubleMove && fromCell.y === aisleCell))) {
         return true;
       }
     } else if (fromCell.figure.type === figureTypes.k) {
       if (this.canBeat(fromCell, targetCell) && !this.isUnderAttack(targetCell, fromCell.figure.color)) {
         return true;
       }
-      if (this.canDoCastling(fromCell, targetCell)) {
+      if (this.canDoCastling(fromCell, targetCell) && !this.isMyKingChecked(fromCell.figure.color)) {
         return true;
       }
     } else {

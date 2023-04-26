@@ -28,6 +28,7 @@ export default class Board {
 
   addFigure(position, firstColor, secondColor) {
     this.setDirectionForPawn(firstColor);
+    this.setAisleCellForPawn(firstColor);
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
@@ -55,6 +56,12 @@ export default class Board {
   setDirectionForPawn(firstColor) {
     const white = firstColor === colors.WHITE ? -1 : 1;
     this.directionForPawn = { white, black: -white };
+  }
+
+  setAisleCellForPawn(firstColor) {
+    const white = firstColor === colors.WHITE ? 3 : 4;
+    const black = firstColor === colors.BLACK ? 3 : 4;
+    this.aisleCellForPawn = {white, black};
   }
 
   getMyKingCell(color) {
