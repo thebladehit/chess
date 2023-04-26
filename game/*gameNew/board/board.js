@@ -74,9 +74,9 @@ export default class Board {
   }
 
   isEmpty(cell, color) {
-    // if (cell.figure?.type === figureTypes.k && cell.figure?.color === color) {
-    //   return true;
-    // }
+    if (cell.figure?.type === figureTypes.k && cell.figure?.color !== color) {
+      return true;
+    }
     if (cell.figure) {
       return false;
     }
@@ -91,9 +91,9 @@ export default class Board {
   }
 
   isEmptyVertical(fromCell, targetCell) {
-    // if (this === selectedCell) {
-    //   return false;
-    // }
+    if (fromCell === targetCell) {
+      return false;
+    }
     if (fromCell.x !== targetCell.x) {
       return false;
     }
@@ -108,9 +108,9 @@ export default class Board {
   }
 
   isEmptyHorizontal(fromCell, targetCell) {
-    // if (this === selectedCell) {
-    //   return false;
-    // }
+    if (fromCell === targetCell) {
+      return false;
+    }
     if (fromCell.y !== targetCell.y) {
       return false;
     }
@@ -125,9 +125,9 @@ export default class Board {
   }
 
   isEmptyDiagonal(fromCell, targetCell) {
-    // if (this === selectedCell) {
-    //   return false;
-    // }
+    if (fromCell === targetCell) {
+      return false;
+    }
     const absX = Math.abs(fromCell.x - targetCell.x);
     const absY = Math.abs(fromCell.y - targetCell.y);
     if (absY !== absX) {
