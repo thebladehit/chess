@@ -6,8 +6,5 @@ export default class Cell {
     this.figure = null;
     this.available = false;
     this.checked = false;
-    // this.rookForCastling = null;
-    // this.cellForRookCastling = null;
-    // this.doubleMove = false;
   }
 }

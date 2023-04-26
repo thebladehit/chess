@@ -224,8 +224,23 @@ export default class Game {
     return cells;
   }
 
+  getCellsForCastling(targetCell, color) {
+    const cells = [];
+    const kingCell = this.board.getMyKingCell(color);
+    const dx = targetCell.x > kingCell.x ? 1 : -1;
+    let x = kingCell.x + dx;
+    while (x >= 0 && x <= 7) {
+      cells.push(this.board.getCell(kingCell.y, x));
+      x += dx;
+    }
+    return cells;
+  }
+
   moveFigure(fromCell, targetCell) {
     this.clearCheck(fromCell.figure.color);
+    if (targetCell.rookCellForCastling) {
+      this.moveFigure(targetCell.rookCellForCastling, targetCell.cellForRookCastling);
+    }
     targetCell.figure = fromCell.figure;
     fromCell.figure = null;
     targetCell.figure.isFirstStep = false;
@@ -254,6 +269,9 @@ export default class Game {
         }
       }
     } else if (fromCell.figure.type === figureTypes.k) {
+      if (this.canDoCastling(fromCell, targetCell)) {
+        return true;
+      }
       for (const direction of figureMoves[fromCell.figure.type]) {
         if (direction(deltaY, deltaX) && !this.isUnderAttack(fromCell, fromCell.figure.color)) {
           return true;
@@ -281,6 +299,39 @@ export default class Game {
       }
     }
     return false;
+  }
+
+  canDoCastling(fromCell, targetCell) {
+    if (fromCell.y !== targetCell.y || Math.abs(fromCell.x - targetCell.x) !== 2) {
+      return false;
+    }
+    if (!fromCell.figure.isFirstStep) {
+      return false;
+    }
+    const cells = this.getCellsForCastling(targetCell, fromCell.figure.color);
+    if (!cells[cells.length - 1].figure) {
+      return false;
+    }
+    console.log('here');
+
+    if (cells[cells.length - 1].figure.type !== figureTypes.r) {
+      return false;
+    }
+    if (!cells[cells.length - 1].figure.isFirstStep) {
+      return false;
+    }
+    for (let i = 0; i< cells.length - 1; i++) {
+      if (cells[i].figure) {
+        return false;
+      }
+      if (this.isUnderAttack(cells[i], fromCell.figure.color)) {
+        return false;
+      }
+    }
+
+    targetCell.rookCellForCastling = cells[cells.length - 1];
+    targetCell.cellForRookCastling = cells[0];
+    return true;
   }
 
   canMove(fromCell, targetCell) {
