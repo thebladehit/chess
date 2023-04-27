@@ -14,11 +14,6 @@ export default class Board {
     for (let i = 0; i < cellNumberVertical; i++) {
       const row = [];
       for (let j = 0; j < cellNumberHorizontal; j++) {
-        // if ((i + j) % 2 === 0) {
-        //   row.push(new Cell(i, j, colors.WHITE));
-        // } else {
-        //   row.push(new Cell(i, j, colors.BLACK));
-        // }
         row.push(new Cell(i, j, (i + j) % 2 === 0 ? colors.WHITE : colors.BLACK))
       }
       cells.push(row);
@@ -29,6 +24,7 @@ export default class Board {
   addFigure(position, firstColor, secondColor) {
     this.setDirectionForPawn(firstColor);
     this.setAisleCellForPawn(firstColor);
+    this.setFinalHorizontal(firstColor);
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
@@ -61,7 +57,13 @@ export default class Board {
   setAisleCellForPawn(firstColor) {
     const white = firstColor === colors.WHITE ? 3 : 4;
     const black = firstColor === colors.BLACK ? 3 : 4;
-    this.aisleCellForPawn = {white, black};
+    this.aisleCellForPawn = { white, black };
+  }
+
+  setFinalHorizontal(firstColor) {
+    const white = firstColor === colors.WHITE ? 0 : 7;
+    const black = firstColor === colors.BLACK ? 0 : 7;
+    this.finalHorizontalForPawn = { white, black };
   }
 
   getMyKingCell(color) {

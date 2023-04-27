@@ -1,10 +1,11 @@
 .container {
     max-width: 1200px;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }
 
 .board {
-
+    position: relative;
 }
 
 .row {
@@ -53,10 +54,20 @@
 }
 
 .listFigure {
-    position: absolute;
     display: flex;
 }
 
 .listFigure div {
     padding: 5%;
+}
+
+.divListFigure {
+    position: absolute;
+    z-index: 1000;
+    height: 100%;
+    width: 100%;
+    background: rgba(140, 140, 140, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

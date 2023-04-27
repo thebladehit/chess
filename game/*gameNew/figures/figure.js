@@ -1,4 +1,4 @@
-const figuresImg = {
+export const figuresImg = {
   rook: {
     white: '/game?=*gameNew/resources/img/whiteRook.png',
     black: '/game?=*gameNew/resources/img/blackRook.png'

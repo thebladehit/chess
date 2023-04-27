@@ -32,8 +32,9 @@ const figureMoves = {
 export default class Game {
   constructor(board) {
     this.board = board;
-    this.checkedKingColor = null;
     this.checkedBy = [];
+    this.finalHorizontal = false;
+    this.finalHorizontalCell = null;
   }
 
   checkAvailableCells(fromCell) {
@@ -89,9 +90,9 @@ export default class Game {
     return this.isUnderAttack(kingCell, color);
   }
 
-  isHereKing(cells) {
+  isHereKing(cells, color) {
     for (const cell of cells) {
-      if (cell.figure?.type === figureTypes.k) {
+      if (cell.figure?.type === figureTypes.k && cell.figure?.color === color) {
         return true;
       }
     }
@@ -100,13 +101,12 @@ export default class Game {
 
   isKingWillBeChecked(fromCell, targetCell, color) {
     const attackingFigureCells = this.getAttackingFigureCells(fromCell, color);
-    console.log(attackingFigureCells);
     for (const attackingFigureCell of attackingFigureCells) {
       if (attackingFigureCell.figure.type === figureTypes.k || attackingFigureCell.figure.type === figureTypes.p || attackingFigureCell.figure.type === figureTypes.n) {
         continue;
       }
       const attackedCells = this.getFutureAttackedCells(fromCell, attackingFigureCell);
-      if (this.isHereKing(attackedCells)) {
+      if (this.isHereKing(attackedCells, fromCell.figure.color)) {
         for (const cell of attackedCells) {
           if (cell === targetCell) {
             return false;
@@ -116,6 +116,11 @@ export default class Game {
       }
     }
     return false;
+  }
+
+  isFinalHorizontal(cell) {
+    const finalHorizontal = this.board.finalHorizontalForPawn[cell.figure.color];
+    return cell.y === finalHorizontal;
   }
 
   checkKing(color) {
@@ -284,9 +289,13 @@ export default class Game {
     if (fromCell.figure.type === figureTypes.p) {
       this.checkDoubleMove(fromCell, targetCell);
     }
-    targetCell.figure = fromCell.figure;
     fromCell.figure.isFirstStep = false;
+    targetCell.figure = fromCell.figure;
     fromCell.figure = null;
+    if (targetCell.figure.type === figureTypes.p && this.isFinalHorizontal(targetCell)) {
+      this.finalHorizontal = true;
+      this.finalHorizontalCell = targetCell;
+    }
     this.checkKing(targetCell.figure.color);
   }
 
@@ -388,7 +397,6 @@ export default class Game {
   }
 
   canMove(fromCell, targetCell) {
-    console.log(this.isKingWillBeChecked(fromCell, targetCell, fromCell.figure.color));
     if (fromCell.figure.color === targetCell.figure?.color) {
       return false;
     }
