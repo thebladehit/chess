@@ -100,11 +100,12 @@ export default class Game {
 
   isKingWillBeChecked(fromCell, targetCell, color) {
     const attackingFigureCells = this.getAttackingFigureCells(fromCell, color);
+    console.log(attackingFigureCells);
     for (const attackingFigureCell of attackingFigureCells) {
-      if (attackingFigureCell.figure.type === figureTypes.k || attackingFigureCell.figure.type === figureTypes.p || attackingFigureCell.figure.type === figureTypes.k) {
+      if (attackingFigureCell.figure.type === figureTypes.k || attackingFigureCell.figure.type === figureTypes.p || attackingFigureCell.figure.type === figureTypes.n) {
         continue;
       }
-      const attackedCells = this.getFutureAttackedCells(fromCell, attackingFigureCell);// here stopped
+      const attackedCells = this.getFutureAttackedCells(fromCell, attackingFigureCell);
       if (this.isHereKing(attackedCells)) {
         for (const cell of attackedCells) {
           if (cell === targetCell) {
@@ -387,6 +388,7 @@ export default class Game {
   }
 
   canMove(fromCell, targetCell) {
+    console.log(this.isKingWillBeChecked(fromCell, targetCell, fromCell.figure.color));
     if (fromCell.figure.color === targetCell.figure?.color) {
       return false;
     }
