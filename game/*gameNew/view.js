@@ -99,6 +99,8 @@ export default class View {
         this.game.deleteFigure(cell.figure);
         cell.figure = createdFigure;
         this.game.checkKing(createdFigure.color);
+        this.game.checkStalemate(createdFigure.color);
+        this.game.checkDraw();
         this.drawBoard();
         list.remove();
       });

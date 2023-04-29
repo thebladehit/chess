@@ -55,7 +55,6 @@ export default class Game {
 
   clearCheck(color) {
     this.checkedBy = [];
-    this.checkedKingColor = null;
     this.board.getMyKingCell(color).checked = false;
   }
 
@@ -127,11 +126,64 @@ export default class Game {
     const enemyKingCell = this.board.getEnemyKingCell(color);
     const attackingFigureCells = this.getAttackingFigureCells(enemyKingCell, enemyKingCell.figure.color);
     if (attackingFigureCells.length !== 0) {
-      this.checkedKingColor = enemyKingCell.figure.color;
       this.checkedBy = attackingFigureCells;
       enemyKingCell.checked = true;
-      // this.checkMate(); // add later
+      this.checkMate(color);
     }
+  }
+
+  checkMate(color) {
+    if (!this.isAvailableMoves(color)) {
+      console.log(`${color} win`);
+    }
+  }
+
+  checkStalemate(color) {
+    if (!this.isAvailableMoves(color)) {
+      console.log('It is a stalemate');
+    }
+  }
+
+  checkDraw() {
+    console.log(this.board.figures.length);
+    if (this.board.figures.length === 2) {
+      console.log('It is a draw');
+    } else if (this.board.figures.length === 3) {
+      for (const figure of this.board.figures) {
+        if (figure.type === figureTypes.n || figure.type === figureTypes.b) {
+          console.log('It is a draw');
+        }
+      }
+    } else if (this.board.figures.length === 4) {
+      const bishopCells= [];
+      for (const row of this.board.cells) {
+        for (const cell of row) {
+          if (cell.figure?.type === figureTypes.b) {
+            bishopCells.push(cell);
+          }
+        }
+      }
+      if (bishopCells.length === 2 && bishopCells[0].figure.color === bishopCells[1].figure.color && bishopCells[0].color === bishopCells[1].color) {
+        console.log('It is a draw');
+      }
+    }
+  }
+
+  isAvailableMoves(color) {
+    for (const rowFrom of this.board.cells) {
+      for (const fromCell of rowFrom) {
+        if (fromCell.figure && fromCell.figure.color !== color) {
+          for (const rowTarget of this.board.cells) {
+            for (const targetCell of rowTarget) {
+              if (this.canMove(fromCell, targetCell)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   checkDoubleMove(fromCell, targetCell) {
@@ -234,7 +286,7 @@ export default class Game {
         return true;
       }
       if (cell.figure?.type === figureTypes.p && fromCell.figure.type === figureTypes.p) {
-        const direction = this.board.directionForPawn[fromCell.figure.color];;
+        const direction = this.board.directionForPawn[fromCell.figure.color];
         const availableCell = this.board.getCell(cell.y + direction, cell.x);
         if (availableCell.doubleMove && availableCell === targetCell) {
           return true;
@@ -297,6 +349,8 @@ export default class Game {
       this.finalHorizontalCell = targetCell;
     }
     this.checkKing(targetCell.figure.color);
+    this.checkStalemate(targetCell.figure.color);
+    this.checkDraw();
   }
 
   canBeat(fromCell, targetCell) {
