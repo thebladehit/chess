@@ -69,6 +69,9 @@ export default class View {
         this.game.clearAvailableCells();
         this.drawBoard();
         this.checkPawnTurn();
+        this.checkMate();
+        this.checkDraw();
+        this.checkStalemate();
       } else if (cell.figure) {
         this.selected = cell;
         this.game.clearRookForCastling();
@@ -102,6 +105,9 @@ export default class View {
         this.game.checkStalemate(createdFigure.color);
         this.game.checkDraw();
         this.drawBoard();
+        this.checkMate();
+        this.checkDraw();
+        this.checkStalemate();
         list.remove();
       });
       list.append(div);
@@ -110,8 +116,7 @@ export default class View {
   }
 
   addFigureList() {
-    const div = document.createElement('div');
-    div.classList.add('divListFigure');
+    const div = this.createContextBackground();
     const list = this.createFigureListHtml(this.game.finalHorizontalCell);
     div.append(list);
     this.element.prepend(div);
@@ -122,6 +127,44 @@ export default class View {
       this.addFigureList();
       this.game.finalHorizontal = false;
       this.game.finalHorizontalCell = null;
+    }
+  }
+
+  createContextBackground() {
+    const div = document.createElement('div');
+    div.classList.add('contextBackground');
+    return div;
+  }
+
+
+  checkMate() {
+    if (this.game.checkMateColor) {
+      const div = this.createContextBackground();
+      const p = document.createElement('p');
+      p.textContent = `${this.game.checkMateColor.toUpperCase()} WIN!`;
+      p.style.color = `${this.game.checkMateColor}`;
+      div.append(p);
+      this.element.prepend(div);
+    }
+  }
+
+  checkDraw() {
+    if (this.game.draw) {
+      const div = this.createContextBackground();
+      const p = document.createElement('p');
+      p.textContent = `DRAW!`;
+      div.append(p);
+      this.element.prepend(div);
+    }
+  }
+
+  checkStalemate() {
+    if (this.game.stalemate) {
+      const div = this.createContextBackground();
+      const p = document.createElement('p');
+      p.textContent = `STALEMATE!`;
+      div.append(p);
+      this.element.prepend(div);
     }
   }
 }

@@ -62,12 +62,16 @@
     padding: 5%;
 }
 
-.divListFigure {
+.contextBackground {
     position: absolute;
     z-index: 1000;
     height: 100%;
     width: 100%;
     background: rgba(140, 140, 140, 0.55);
+    color: #fff;
+    font-size: 26px;
+    font-family: 'sans-serif';
+    font-weight: 700;
     display: flex;
     justify-content: center;
     align-items: center;

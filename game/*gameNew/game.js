@@ -33,6 +33,10 @@ export default class Game {
   constructor(board) {
     this.board = board;
     this.checkedBy = [];
+    this.checkMateColor = null;
+    this.draw = false;
+    this.stalemate = false;
+    this.gameOver = false;
     this.finalHorizontal = false;
     this.finalHorizontalCell = null;
   }
@@ -134,24 +138,27 @@ export default class Game {
 
   checkMate(color) {
     if (!this.isAvailableMoves(color)) {
-      console.log(`${color} win`);
+      this.checkMateColor = color;
+      this.gameOver = true;
     }
   }
 
   checkStalemate(color) {
-    if (!this.isAvailableMoves(color)) {
-      console.log('It is a stalemate');
+    if (!this.isAvailableMoves(color) && !this.gameOver) {
+      this.stalemate = true;
+      this.gameOver = true;
     }
   }
 
   checkDraw() {
-    console.log(this.board.figures.length);
     if (this.board.figures.length === 2) {
-      console.log('It is a draw');
+      this.draw = true;
+      this.gameOver = true;
     } else if (this.board.figures.length === 3) {
       for (const figure of this.board.figures) {
         if (figure.type === figureTypes.n || figure.type === figureTypes.b) {
-          console.log('It is a draw');
+          this.draw = true;
+          this.gameOver = true;
         }
       }
     } else if (this.board.figures.length === 4) {
@@ -164,7 +171,8 @@ export default class Game {
         }
       }
       if (bishopCells.length === 2 && bishopCells[0].figure.color === bishopCells[1].figure.color && bishopCells[0].color === bishopCells[1].color) {
-        console.log('It is a draw');
+        this.draw = true;
+        this.gameOver = true;
       }
     }
   }
