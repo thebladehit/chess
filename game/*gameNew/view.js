@@ -27,18 +27,27 @@ export default class View {
     this.element = element;
     this.game = game;
     this.selected = null;
+    this.reversed = false;
   }
 
-  drawBoard(reverse = false) {
+  drawBoard() {
     this.element.innerHTML = '';
-    for (const row of reverse ? this.game.board.cells.reverse() : this.game.board.cells) {
+    for (const row of this.game.board.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
-      for (const cell of reverse ? row.reverse() : row) {
+      for (const cell of row) {
         const cellHTML = this.createCellHtml(cell);
-        rowHTML.append(cellHTML);
+        if (this.reversed) {
+          rowHTML.prepend(cellHTML);
+        } else {
+          rowHTML.append(cellHTML);
+        }
       }
-      this.element.append(rowHTML);
+      if (this.reversed) {
+        this.element.prepend(rowHTML);
+      } else {
+        this.element.append(rowHTML);
+      }
     }
   }
 
@@ -65,10 +74,11 @@ export default class View {
     }
     cellHTML.addEventListener('click', () => {
       if (this.selected && this.selected !== cell && cell.available) {
+        this.reversed = !this.reversed;
         this.game.moveFigure(this.selected, cell);
         this.selected = null;
         this.game.clearAvailableCells();
-        this.drawBoard(true);
+        this.drawBoard();
         this.checkPawnTurn();
         this.checkMate();
         this.checkDraw();
