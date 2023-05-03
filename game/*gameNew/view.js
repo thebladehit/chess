@@ -1,6 +1,7 @@
 import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
 import Figure, { figuresImg } from "/game?=*gameNew/figures/figure.js";
 import { colors } from "/game?=*gameNew/resources/colors.js";
+import { defaultChessPosition } from "/game?=*gameNew/resources/position.js";
 
 const figuresForList = {
   queen: {
@@ -136,14 +137,25 @@ export default class View {
     return div;
   }
 
+  createRestartButton() {
+    const button = document.createElement('button');
+    button.classList.add('buttonRestart');
+    button.textContent = 'RESTART';
+    button.addEventListener('click', () => {
+      this.restartGame();
+    });
+    return button;
+  }
 
   checkMate() {
     if (this.game.checkMateColor) {
       const div = this.createContextBackground();
       const p = document.createElement('p');
+      const button = this.createRestartButton();
       p.textContent = `${this.game.checkMateColor.toUpperCase()} WIN!`;
       p.style.color = `${this.game.checkMateColor}`;
       div.append(p);
+      div.append(button);
       this.element.prepend(div);
     }
   }
@@ -152,8 +164,10 @@ export default class View {
     if (this.game.draw) {
       const div = this.createContextBackground();
       const p = document.createElement('p');
+      const button = this.createRestartButton();
       p.textContent = `DRAW!`;
       div.append(p);
+      div.append(button);
       this.element.prepend(div);
     }
   }
@@ -162,9 +176,18 @@ export default class View {
     if (this.game.stalemate) {
       const div = this.createContextBackground();
       const p = document.createElement('p');
+      const button = this.createRestartButton();
       p.textContent = `STALEMATE!`;
       div.append(p);
+      div.append(button);
       this.element.prepend(div);
     }
+  }
+
+  restartGame() {
+    this.game.clearGame();
+    this.game.board.clearBoard();
+    this.game.board.addFigure(defaultChessPosition, colors.WHITE, colors.BLACK);
+    this.drawBoard();
   }
 }

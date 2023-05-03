@@ -41,6 +41,16 @@ export default class Game {
     this.finalHorizontalCell = null;
   }
 
+  clearGame() {
+    this.checkedBy = [];
+    this.checkMateColor = null;
+    this.draw = false;
+    this.stalemate = false;
+    this.gameOver = false;
+    this.finalHorizontal = false;
+    this.finalHorizontalCell = null;
+  }
+
   checkAvailableCells(fromCell) {
     for (const row of this.board.cells) {
       for (const cell of row) {

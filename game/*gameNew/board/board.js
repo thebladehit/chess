@@ -49,6 +49,19 @@ export default class Board {
     }
   }
 
+  clearBoard() {
+    this.figures = [];
+    for (const row of this.cells) {
+      for (const cell of row) {
+        cell.figure = null;
+        cell.available = false;
+        cell.checked = false;
+        cell.rookCellForCastling = null;
+        cell.cellForRookCastling = null;
+      }
+    }
+  }
+
   setDirectionForPawn(firstColor) {
     const white = firstColor === colors.WHITE ? -1 : 1;
     this.directionForPawn = { white, black: -white };
