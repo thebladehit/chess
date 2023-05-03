@@ -33,6 +33,10 @@ const figureMoves = {
 export default class Game {
   constructor(board) {
     this.board = board;
+    this.setDefaultSettings();
+  }
+
+  setDefaultSettings() {
     this.checkedBy = [];
     this.checkMateColor = null;
     this.draw = false;
@@ -41,16 +45,6 @@ export default class Game {
     this.finalHorizontal = false;
     this.finalHorizontalCell = null;
     this.movePlayer = colors.WHITE;
-  }
-
-  clearGame() {
-    this.checkedBy = [];
-    this.checkMateColor = null;
-    this.draw = false;
-    this.stalemate = false;
-    this.gameOver = false;
-    this.finalHorizontal = false;
-    this.finalHorizontalCell = null;
   }
 
   checkAvailableCells(fromCell) {

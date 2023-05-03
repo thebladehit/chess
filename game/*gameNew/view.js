@@ -196,7 +196,8 @@ export default class View {
   }
 
   restartGame() {
-    this.game.clearGame();
+    this.reversed = false;
+    this.game.setDefaultSettings();
     this.game.board.clearBoard();
     this.game.board.addFigure(defaultChessPosition, colors.WHITE, colors.BLACK);
     this.drawBoard();
