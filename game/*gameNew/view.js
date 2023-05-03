@@ -29,12 +29,12 @@ export default class View {
     this.selected = null;
   }
 
-  drawBoard() {
+  drawBoard(reverse = false) {
     this.element.innerHTML = '';
-    for (const row of this.game.board.cells) {
+    for (const row of reverse ? this.game.board.cells.reverse() : this.game.board.cells) {
       const rowHTML = document.createElement('div');
       rowHTML.classList.add('row');
-      for (const cell of row) {
+      for (const cell of reverse ? row.reverse() : row) {
         const cellHTML = this.createCellHtml(cell);
         rowHTML.append(cellHTML);
       }
@@ -68,7 +68,7 @@ export default class View {
         this.game.moveFigure(this.selected, cell);
         this.selected = null;
         this.game.clearAvailableCells();
-        this.drawBoard();
+        this.drawBoard(true);
         this.checkPawnTurn();
         this.checkMate();
         this.checkDraw();
