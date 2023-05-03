@@ -73,7 +73,8 @@ export default class View {
         this.checkMate();
         this.checkDraw();
         this.checkStalemate();
-      } else if (cell.figure) {
+        this.game.changePlayer();
+      } else if (cell.figure?.color === this.game.movePlayer && cell.figure) {
         this.selected = cell;
         this.game.clearRookForCastling();
         this.game.checkAvailableCells(cell);

@@ -1,4 +1,5 @@
 import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
+import { colors } from "/game?=*gameNew/resources/colors.js";
 
 const figureMoves = {
   rook: [
@@ -39,6 +40,7 @@ export default class Game {
     this.gameOver = false;
     this.finalHorizontal = false;
     this.finalHorizontalCell = null;
+    this.movePlayer = colors.WHITE;
   }
 
   clearGame() {
@@ -110,6 +112,10 @@ export default class Game {
       }
     }
     return false;
+  }
+
+  changePlayer() {
+    this.movePlayer = this.movePlayer === colors.WHITE ? colors.BLACK : colors.WHITE;
   }
 
   isKingWillBeChecked(fromCell, targetCell, color) {
