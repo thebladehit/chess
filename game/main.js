@@ -1,6 +1,15 @@
-import Board from '/game?=board/board.js';
-import { colors } from "/game?=resources/colors.js";
+import Board from '/getFile?=game/board/board.js';
+import { colors } from "/getFile?=game/resources/colors.js";
+import { defaultChessPosition } from "/getFile?=game/resources/position.js";
+import View from "/getFile?=game/view.js";
+import Game from "/getFile?=game/game.js";
 
-Board.createBoard(); // create cells
-Board.addFigure(colors.WHITE, colors.BLACK);
-Board.drawBoard(); // draw cells
+const board = new Board(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical);
+board.addFigure(defaultChessPosition, colors.WHITE, colors.BLACK);
+
+const boardHtml = document.querySelector('.board');
+const game = new Game(board);
+const view = new View(boardHtml, game);
+view.drawBoard();
+
+console.log(board);

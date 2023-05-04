@@ -7,7 +7,7 @@ import homePage from "#app/controllers/home/home-page.js";
 import share from "#app/controllers/public/public.js";
 
 addRoute('/', homePage);
-addRoute('/game', share);
+addRoute('/getFile', share);
 
 const server = http.createServer(runRouter);
 server.listen(PORT);

@@ -1,7 +1,7 @@
-import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
-import Figure, { figuresImg } from "/game?=*gameNew/figures/figure.js";
-import { colors } from "/game?=*gameNew/resources/colors.js";
-import { defaultChessPosition } from "/game?=*gameNew/resources/position.js";
+import figureTypes from "/getFile?=game/resources/figureTypes.js";
+import Figure, { figuresImg } from "/getFile?=game/figures/figure.js";
+import { colors } from "/getFile?=game/resources/colors.js";
+import { defaultChessPosition } from "/getFile?=game/resources/position.js";
 
 const figuresForList = {
   queen: {

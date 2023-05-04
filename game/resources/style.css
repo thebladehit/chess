@@ -1,10 +1,12 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }
 
 .board {
-
+    position: relative;
 }
 
 .row {
@@ -53,10 +55,36 @@
 }
 
 .listFigure {
-    position: absolute;
     display: flex;
+    justify-content: center;
 }
 
 .listFigure div {
     padding: 5%;
+}
+
+.buttonRestart {
+    width: 150px;
+    height: 60px;
+    border-radius: 10px;
+    background: rgb(210, 210, 210);
+    border: none;
+    font-family: 'sans-serif';
+    font-weight: 700;
+}
+
+.contextBackground {
+    position: absolute;
+    z-index: 1000;
+    height: 100%;
+    width: 100%;
+    background: rgba(140, 140, 140, 0.55);
+    color: #fff;
+    font-size: 26px;
+    font-family: 'sans-serif';
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

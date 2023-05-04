@@ -1,5 +1,5 @@
-import figureTypes from "/game?=*gameNew/resources/figureTypes.js";
-import { colors } from "/game?=*gameNew/resources/colors.js";
+import figureTypes from "/getFile?=game/resources/figureTypes.js";
+import { colors } from "/getFile?=game/resources/colors.js";
 
 const figureMoves = {
   rook: [
@@ -462,7 +462,6 @@ export default class Game {
         return false;
       }
     }
-
     targetCell.rookCellForCastling = cells[cells.length - 1];
     targetCell.cellForRookCastling = cells[0];
     return true;
