@@ -29,19 +29,20 @@ export default class Board {
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
       splitedStartPosition = splitedStartPosition
-        .map(row => row === 'null' ? row : row
+        .map(row => row
           .split('')
           .reverse()
           .join(''));
     }
     for (let y = 0; y < position.cellNumberVertical; y++) {
-      if (splitedStartPosition[y] === 'null') {
-        continue;
-      }
+      // if (splitedStartPosition[y] === 'null') {
+      //   continue;
+      // }
       if (this.figures.length === position.figureNumberOnePlayer) {
         color = firstColor;
       }
       for (let x = 0; x < position.cellNumberHorizontal; x++) {
+        if (figureTypes[splitedStartPosition[y][x]] === null) continue;
         const figure = new Figure(color, figureTypes[splitedStartPosition[y][x]]);
         this.cells[y][x].figure = figure;
         this.figures.push(figure);

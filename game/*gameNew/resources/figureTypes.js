@@ -4,5 +4,6 @@ export default {
   b: 'bishop',
   n: 'knight',
   p: 'pawn',
-  r: 'rook'
+  r: 'rook',
+  0: null
 }
