@@ -4,7 +4,7 @@ export function enter(request, response) {
   try {
     const name = request.headers['chess_name'];
     if (name.length < 3) {
-      response.end(JSON.stringify({res: false}));
+      response.end(JSON.stringify({res: false, error: 'Min name length = 3'}));
     } else {
       const token = generateToken();
       const user = {

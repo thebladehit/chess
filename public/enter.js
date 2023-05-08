@@ -1,3 +1,9 @@
+const token = localStorage.getItem('CHESS_TOKEN');
+
+if (token) {
+  autoEnter();
+}
+
 const btn = document.querySelector('#btn');
 const nameInput = document.querySelector('#name');
 
@@ -22,6 +28,19 @@ btn.addEventListener('click', async () => {
     console.log(err);
   }
 });
+
+async function autoEnter() {
+  const response = await fetch(`/autoEnter`, {
+    method: 'GET',
+    headers: {
+      'CHESS_TOKEN': token
+    }
+  });
+  const data = await response.json();
+  if (data.res) {
+    redirect('/');
+  }
+}
 
 function redirect(url) {
   location.href = url;
