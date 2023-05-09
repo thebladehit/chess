@@ -1,0 +1,20 @@
+* {
+    font-family: 'sans-serif';
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+input {
+    width: 130px;
+    height: 25px;
+
+}
+
+button {
+    width: 60px;
+    height: 30px;
+}

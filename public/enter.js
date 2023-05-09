@@ -1,8 +1,10 @@
-const token = localStorage.getItem('CHESS_TOKEN');
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    autoEnter();
+  }
+});
 
-if (token) {
-  autoEnter();
-}
+autoEnter();
 
 const btn = document.querySelector('#btn');
 const nameInput = document.querySelector('#name');
@@ -30,6 +32,10 @@ btn.addEventListener('click', async () => {
 });
 
 async function autoEnter() {
+  const token = localStorage.getItem('CHESS_TOKEN');
+  if (!token) {
+    return;
+  }
   const response = await fetch(`/autoEnter`, {
     method: 'GET',
     headers: {

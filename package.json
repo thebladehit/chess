@@ -21,7 +21,8 @@
   "homepage": "https://github.com/BoqdanY/chest#readme",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "ws": "^8.13.0"
   },
   "imports": {
     "#app/*": {
