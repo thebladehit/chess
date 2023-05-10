@@ -15,7 +15,6 @@ const token = localStorage.getItem('CHESS_TOKEN');
   }
 })()
 
-
 async function autoEnter() {
   const response = await fetch(`/autoEnter`, {
     method: 'GET',

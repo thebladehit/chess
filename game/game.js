@@ -113,9 +113,14 @@ export default class Game {
   }
 
   isKingWillBeChecked(fromCell, targetCell, color) {
+    const notDangerousFigure = {
+      'king': true,
+      'knight': true,
+      'pawn': true
+    };
     const attackingFigureCells = this.getAttackingFigureCells(fromCell, color);
     for (const attackingFigureCell of attackingFigureCells) {
-      if (attackingFigureCell.figure.type === figureTypes.k || attackingFigureCell.figure.type === figureTypes.p || attackingFigureCell.figure.type === figureTypes.n) {
+      if (notDangerousFigure[attackingFigureCell.figure.type]) {
         continue;
       }
       const attackedCells = this.getFutureAttackedCells(fromCell, attackingFigureCell);

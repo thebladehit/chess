@@ -9,7 +9,7 @@ export default (ws) => {
       if (message.event === 'authorization' && user) {
         user.connections++;
       }
-      console.log(USERS);
+      console.log(USERS); // console
     });
     connection.on('close', () => {
       user.connections--;
