@@ -11,10 +11,47 @@
 input {
     width: 130px;
     height: 25px;
-
 }
 
 button {
     width: 60px;
     height: 30px;
+}
+
+button#create {
+    width: 150px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    background: rgba(28, 112, 43, 0.76);
+    color: #fff;
+    transition: .3s;
+}
+
+button#create:hover {
+    background: rgb(28, 112, 43);
+    cursor: pointer;
+}
+
+.alert {
+    padding: 1%;
+    border-radius: 10px;
+    background: rgba(148, 245, 169, 0.55);
+    margin-bottom: 20px;
+}
+
+table {
+    /*border: 1px solid rgba(96, 96, 96, 0.24);*/
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td{
+    padding: 1%;
+    border: 1px solid rgba(96, 96, 96, 0.24);
+}
+
+.waitingPage {
+    text-align: left;
 }
