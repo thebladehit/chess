@@ -9,7 +9,6 @@ const token = localStorage.getItem('CHESS_TOKEN');
       const socket = new WebSocket('ws://localhost:3000');
       socket.addEventListener('open', () => {
         socket.send(JSON.stringify({ event: 'authorization', token }));
-        socket.send(JSON.stringify({ event: 'getGamesData' }));
         const btn = document.querySelector('#create');
         btn.addEventListener('click', () => {
           createGame(socket);
@@ -18,10 +17,15 @@ const token = localStorage.getItem('CHESS_TOKEN');
 
       socket.addEventListener('message', (message) => {
         message = JSON.parse(message.data);
-        if (message.event === 'getGamesData') {
+        console.log(message);
+        if (message.event === 'gamesList') {
           createTrForTable(message.data);
         } else if (message.event === 'gameCreated') {
           console.log(message.game);
+          waitingForPlayer();
+        } else if (message.event === 'gameCurrent') {
+          console.log(message.game);
+          waitingForPlayer();
         }
       });
 
@@ -46,10 +50,6 @@ function redirect(url) {
   location.href = url;
 }
 
-async function getGamesData(socket) {
-  socket.send(JSON.stringify({ event: 'getGamesData' }))
-}
-
 function createTrForTable(games) {
   const table = document.querySelector('#table');
   for (const game of games) {
@@ -66,4 +66,9 @@ function createTrForTable(games) {
 function createGame(socket) {
   socket.send(JSON.stringify({ event: 'gameCreate' }));
   console.log('send game create'); // console
+}
+
+function waitingForPlayer() {
+  const userZone = document.querySelector('.userZone');
+  userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
 }

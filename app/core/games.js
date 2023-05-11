@@ -4,7 +4,7 @@ export default class Games {
   }
 
   create(user) {
-    if (this.#userInActiveGame(user)) {
+    if (this.getUserCurrentGame(user)) {
       return null;
     }
     const game = new Game(this.#makeId(), user);
@@ -16,13 +16,23 @@ export default class Games {
     return Date.now() + '.-.' + Math.random();
   }
 
-  #userInActiveGame(user) {
+  getAcceptableGames() {
+    const res = [];
     for (const game of this.games.values()) {
-      if ((game.u1 === user || game.u2 === user) && game.isActive) {
-        return true;
+      if (game.u2 === null && game.isActive) {
+        res.push(game.toPublic());
       }
     }
-    return false;
+    return res;
+  }
+
+  getUserCurrentGame(user) {
+    for (const game of this.games.values()) {
+      if ((game.u1 === user || game.u2 === user) && game.isActive) {
+        return game;
+      }
+    }
+    return null;
   }
 }
 
