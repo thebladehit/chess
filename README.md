@@ -2,6 +2,6 @@
 
 Web chess.
 
-Folder game - bad code.
+App folder - server part
 
-Folder *gameNew - better code.
+Game folder - game for two player on one PC (yet)
