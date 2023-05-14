@@ -1,31 +1,27 @@
 const token = localStorage.getItem('CHESS_TOKEN');
+let game = null;
 
 (async ()=> {
   if (!token) {
     redirect('/enterPage');
   } else {
     if (await autoEnter()) {
-
       const socket = new WebSocket('ws://localhost:3000');
       socket.addEventListener('open', () => {
         socket.send(JSON.stringify({ event: 'authorization', token }));
-        const btn = document.querySelector('#create');
-        btn.addEventListener('click', () => {
-          createGame(socket);
-        });
       });
-
       socket.addEventListener('message', (message) => {
         message = JSON.parse(message.data);
         console.log(message);
-        if (message.event === 'gamesList') {
-          createTrForTable(message.data);
-        } else if (message.event === 'gameCreated') {
+        if (message.event === 'gamesList' && !game) {
+          createTrForTable(message.data, socket);
+        } else if (message.event === 'gameCreated' || message.event === 'gameCurrent') {
+          game = message.data;
           console.log(message.game);
           waitingForPlayer();
-        } else if (message.event === 'gameCurrent') {
-          console.log(message.game);
-          waitingForPlayer();
+        } else if (message.event === 'gameJoined') {
+          game = message.data;
+          startChess();
         }
       });
 
@@ -50,7 +46,28 @@ function redirect(url) {
   location.href = url;
 }
 
-function createTrForTable(games) {
+function createTrForTable(games, socket) {
+  const userZone = document.querySelector('.userZone');
+  userZone.innerHTML = `
+    <div class="alert">
+        Please, join to room or create new
+    </div>
+    <table id="table">
+        <tr>
+            <th>Id</th>
+            <th>Hoster</th>
+            <th>Actions</th>
+        </tr>
+    </table>`;
+
+  const btn = document.createElement('button');
+  btn.id = 'create';
+  btn.textContent = 'Create room';
+  btn.addEventListener('click', () => {
+    createGame(socket);
+  });
+  userZone.append(btn);
+
   const table = document.querySelector('#table');
   for (const game of games) {
     const tr = document.createElement('tr');
@@ -59,6 +76,12 @@ function createTrForTable(games) {
       td.textContent = value;
       tr.append(td);
     }
+    const btn = document.createElement('button');
+    btn.textContent = 'Join';
+    btn.addEventListener('click', () => {
+      socket.send(JSON.stringify({ event: 'gameJoin', data: game.id }));
+    })
+    tr.lastChild.appendChild(btn);
     table.append(tr);
   }
 }
@@ -71,4 +94,8 @@ function createGame(socket) {
 function waitingForPlayer() {
   const userZone = document.querySelector('.userZone');
   userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
+}
+function startChess() {
+  const userZone = document.querySelector('.userZone');
+  userZone.innerHTML = 'Game here';
 }
