@@ -217,52 +217,20 @@ export default class Game {
 
   getFutureAttackedCells(attackedCell, attackingCell) {
     const cells = [];
-    const dy = attackingCell.y > attackedCell.y ? -1 : 1;
-    const dx = attackingCell.x > attackedCell.x ? -1 : 1;
-
     let y = attackingCell.y;
     let x = attackingCell.x;
-
-    if (attackedCell.x === attackingCell.x) {
-      while (y >= 0 && y <= 7) {
-        const cell = this.board.getCell(y, attackingCell.x);
-        if (!cell) break;
-        if (!this.board.isEmpty(cell) && cell !== attackedCell && cell !== attackingCell) {
-          if (cell.figure?.type === figureTypes.k) {
-            cells.push(cell);
-          }
-          break;
-        }
-        cells.push(cell);
-        y += dy;
+    const dx = attackingCell.x === attackedCell.x ? 0 : attackingCell.x < attackedCell.x ? 1 : -1;
+    const dy = attackingCell.y === attackedCell.y ? 0 : attackingCell.y < attackedCell.y ? 1 : -1;
+    while (y >= 0 && y <= 7 && x >= 0 && x <= 7) {
+      const cell = this.board.getCell(y, x);
+      // if (!cell) break;
+      if (!this.board.isEmpty(cell) && cell !== attackedCell && cell !== attackingCell) {
+        if (cell.figure?.type === figureTypes.k) cells.push(cell);
+        break;
       }
-    } else if (attackedCell.y === attackingCell.y) {
-      while (x >= 0 && x <= 7) {
-        const cell = this.board.getCell(attackingCell.y, x);
-        if (!cell) break;
-        if (!this.board.isEmpty(cell) && cell !== attackedCell && cell !== attackingCell) {
-          if (cell.figure?.type === figureTypes.k) {
-            cells.push(cell);
-          }
-          break;
-        }
-        cells.push(cell);
-        x += dx;
-      }
-    } else {
-      while (y >= 0 && y <= 7) {
-        const cell = this.board.getCell(y, x);
-        if (!cell) break;
-        if (!this.board.isEmpty(cell) && cell !== attackedCell && cell !== attackingCell) {
-          if (cell.figure?.type === figureTypes.k) {
-            cells.push(cell);
-          }
-          break;
-        }
-        cells.push(cell);
-        y += dy;
-        x += dx;
-      }
+      cells.push(cell);
+      y += dy;
+      x += dx;
     }
     return cells;
   }
@@ -270,32 +238,15 @@ export default class Game {
   getAttackedCellsToKing(color) {
     const cells = [];
     const kingCell = this.board.getMyKingCell(color);
-
-    if (this.checkedBy.length > 1) {
-      return [];
-    }
-
-    const minX = Math.min(kingCell.x, this.checkedBy[0].x);
-    const maxX = Math.max(kingCell.x, this.checkedBy[0].x);
-    const minY = Math.min(kingCell.y, this.checkedBy[0].y);
-    const maxY = Math.max(kingCell.y, this.checkedBy[0].y);
-
-    if (this.checkedBy[0].figure.type === figureTypes.n) {
-      cells.push(this.checkedBy[0]);
-    } else if (kingCell.x === this.checkedBy[0].x) {
-      for (let i = minY; i <= maxY; i++) {
-        cells.push(this.board.getCell(i, kingCell.x));
-      }
-    } else if (kingCell.y === this.checkedBy[0].y) {
-      for (let i = minX; i <= maxX; i++) {
-        cells.push(this.board.getCell(kingCell.y, i));
-      }
-    } else {
-      const dx = kingCell.x < this.checkedBy[0].x ? 1 : -1;
-      const dy = kingCell.y < this.checkedBy[0].y ? 1 : -1;
-      const abs = Math.abs(kingCell.y - this.checkedBy[0].y);
-
-      for (let i = 1; i <= abs; i++) {
+    if (this.checkedBy.length > 1) return [];
+    if (this.checkedBy[0].figure.type === figureTypes.n) cells.push(this.checkedBy[0]);
+    else {
+      const dx = kingCell.x === this.checkedBy[0].x ? 0 : kingCell.x < this.checkedBy[0].x ? 1 : -1;
+      const dy = kingCell.y === this.checkedBy[0].y ? 0 : kingCell.y < this.checkedBy[0].y ? 1 : -1;
+      const absY = Math.abs(kingCell.y - this.checkedBy[0].y);
+      const absX = Math.abs(kingCell.x - this.checkedBy[0].x);
+      const absForLoop = absX === 0 ? absY : absX;
+      for (let i = 1; i <= absForLoop; i++) {
         cells.push(this.board.getCell(kingCell.y + i * dy, kingCell.x + i * dx));
       }
     }
@@ -304,15 +255,11 @@ export default class Game {
 
   canProtectKing(fromCell, targetCell, color) {
     for (const cell of this.getAttackedCellsToKing(color)) {
-      if (targetCell === cell) {
-        return true;
-      }
-      if (cell.figure?.type === figureTypes.p && fromCell.figure.type === figureTypes.p) {
+      if (targetCell === cell) return true;
+      if (cell.figure && cell.figure.type === figureTypes.p && fromCell.figure.type === figureTypes.p) {
         const direction = this.board.directionForPawn[fromCell.figure.color];
         const availableCell = this.board.getCell(cell.y + direction, cell.x);
-        if (availableCell.doubleMove && availableCell === targetCell) {
-          return true;
-        }
+        if (availableCell.doubleMove && availableCell === targetCell) return true;
       }
     }
     return false;
