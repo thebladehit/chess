@@ -21,7 +21,7 @@ let game = null;
           waitingForPlayer();
         } else if (message.event === 'gameJoined') {
           game = message.data;
-          startChess();
+          startChess(socket);
         }
       });
 
@@ -95,7 +95,13 @@ function waitingForPlayer() {
   const userZone = document.querySelector('.userZone');
   userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
 }
-function startChess() {
+function startChess(socket) {
   const userZone = document.querySelector('.userZone');
   userZone.innerHTML = 'Game here';
+  const btn = document.createElement('button');
+  btn.textContent = 'Click';
+  btn.addEventListener('click', () => {
+    socket.send(JSON.stringify({ event: 'sendMove' }));
+  })
+  userZone.append(btn);
 }

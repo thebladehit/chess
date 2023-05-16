@@ -74,7 +74,7 @@ export default class View {
     }
     cellHTML.addEventListener('click', () => {
       if (this.selected && this.selected !== cell && cell.available) {
-        this.reversed = !this.reversed;
+        // this.reversed = !this.reversed;
         this.game.moveFigure(this.selected, cell);
         this.selected = null;
         this.game.clearAvailableCells();
@@ -135,9 +135,8 @@ export default class View {
   }
 
   checkPawnTurn() {
-    if (this.game.finalHorizontal) {
+    if (this.game.finalHorizontalCell) {
       this.addFigureList();
-      this.game.finalHorizontal = false;
       this.game.finalHorizontalCell = null;
     }
   }

@@ -15,7 +15,11 @@ export default (ws) => {
           user.connection = connection;
           const currentGame = GAMES.getUserCurrentGame(user);
           if (currentGame) {
-            connection.send(JSON.stringify({ event: 'gameCurrent', data: currentGame }));
+            if (currentGame.u1 && currentGame.u2) {
+              connection.send(JSON.stringify({ event: 'gameJoined', data: currentGame.toPublic() }));
+            } else {
+              connection.send(JSON.stringify({ event: 'gameCurrent', data: currentGame.toPublic() }));
+            }
           }
           connection.send(JSON.stringify({ event: 'gamesList', data: GAMES.getAcceptableGames() }));
         }
@@ -34,6 +38,15 @@ export default (ws) => {
         game.u1.connection.send(JSON.stringify({ event: 'gameJoined', data: game.toPublic() }));
         const data = JSON.stringify({ event: 'gamesList', data: GAMES.getAcceptableGames() });
         sendToAll(ws, data);
+
+        console.log(GAMES.games);
+      } else if (message.event === 'sendMove') {
+        const game = GAMES.getUserCurrentGame(user);
+        if (game.u2 === user) {
+          game.u1.connection.send(JSON.stringify("work ця хуйня працює"));
+        } else {
+          game.u2.connection.send(JSON.stringify("work ця хуйня працює"));
+        }
       }
     });
     connection.on('close', () => {
