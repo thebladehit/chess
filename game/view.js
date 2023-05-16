@@ -37,44 +37,31 @@ export default class View {
       rowHTML.classList.add('row');
       for (const cell of row) {
         const cellHTML = this.createCellHtml(cell);
-        if (this.reversed) {
-          rowHTML.prepend(cellHTML);
-        } else {
-          rowHTML.append(cellHTML);
-        }
+        if (this.reversed) rowHTML.prepend(cellHTML);
+        else rowHTML.append(cellHTML);
       }
-      if (this.reversed) {
-        this.element.prepend(rowHTML);
-      } else {
-        this.element.append(rowHTML);
-      }
+      if (this.reversed) this.element.prepend(rowHTML);
+      else this.element.append(rowHTML);
     }
   }
 
   createCellHtml(cell) {
     const cellHTML = document.createElement('div');
     cellHTML.className = `col ${cell.color}`;
-    if (cell.figure) {
-      cellHTML.append(this.createFigureImg(cell));
-    }
+    if (cell.figure) cellHTML.append(this.createFigureImg(cell));
     if (cell.available) {
-      if (cell.figure) {
-        cellHTML.classList.add('availableFigure');
-      } else {
+      if (cell.figure) cellHTML.classList.add('availableFigure');
+      else {
         const available = document.createElement('div');
         available.classList.add('available');
         cellHTML.append(available);
       }
     }
-    if (this.selected === cell) {
-      cellHTML.classList.add('selected');
-    }
-    if (cell.checked) {
-      cellHTML.classList.add('check');
-    }
+    if (this.selected === cell) cellHTML.classList.add('selected');
+    if (cell.checked) cellHTML.classList.add('check');
     cellHTML.addEventListener('click', () => {
       if (this.selected && this.selected !== cell && cell.available) {
-        // this.reversed = !this.reversed;
+        this.reversed = !this.reversed;
         this.game.moveFigure(this.selected, cell);
         this.selected = null;
         this.game.clearAvailableCells();
@@ -104,9 +91,9 @@ export default class View {
   createFigureListHtml(cell) {
     const list = document.createElement('div');
     list.classList.add('listFigure');
-    for (const [type, figureImgs] of Object.entries(figuresForList)) {
+    for (const [ type, figureImg ] of Object.entries(figuresForList)) {
       const div = document.createElement('div');
-      const img = this.createFigureImg(null, cell.figure.color === colors.WHITE ? figureImgs.white : figureImgs.black);
+      const img = this.createFigureImg(null, cell.figure.color === colors.WHITE ? figureImg.white : figureImg.black);
       div.append(img);
       div.addEventListener('click', () => {
         const createdFigure = new Figure(cell.figure.color, type);
@@ -127,20 +114,6 @@ export default class View {
     return list;
   }
 
-  addFigureList() {
-    const div = this.createContextBackground();
-    const list = this.createFigureListHtml(this.game.finalHorizontalCell);
-    div.append(list);
-    this.element.prepend(div);
-  }
-
-  checkPawnTurn() {
-    if (this.game.finalHorizontalCell) {
-      this.addFigureList();
-      this.game.finalHorizontalCell = null;
-    }
-  }
-
   createContextBackground() {
     const div = document.createElement('div');
     div.classList.add('contextBackground');
@@ -157,41 +130,22 @@ export default class View {
     return button;
   }
 
-  checkMate() {
-    if (this.game.checkMateColor) {
-      const div = this.createContextBackground();
-      const p = document.createElement('p');
-      const button = this.createRestartButton();
-      p.textContent = `${this.game.checkMateColor.toUpperCase()} WIN!`;
-      p.style.color = `${this.game.checkMateColor}`;
-      div.append(p);
-      div.append(button);
-      this.element.prepend(div);
-    }
+  createPanelForRestart(text, style) {
+    const div = this.createContextBackground();
+    const p = document.createElement('p');
+    const button = this.createRestartButton();
+    p.textContent = `${text}`;
+    if (style) p.style.color = `${this.game.checkMateColor}`;
+    div.append(p);
+    div.append(button);
+    return div;
   }
 
-  checkDraw() {
-    if (this.game.draw) {
-      const div = this.createContextBackground();
-      const p = document.createElement('p');
-      const button = this.createRestartButton();
-      p.textContent = `DRAW!`;
-      div.append(p);
-      div.append(button);
-      this.element.prepend(div);
-    }
-  }
-
-  checkStalemate() {
-    if (this.game.stalemate) {
-      const div = this.createContextBackground();
-      const p = document.createElement('p');
-      const button = this.createRestartButton();
-      p.textContent = `STALEMATE!`;
-      div.append(p);
-      div.append(button);
-      this.element.prepend(div);
-    }
+  addFigureList() {
+    const div = this.createContextBackground();
+    const list = this.createFigureListHtml(this.game.finalHorizontalCell);
+    div.append(list);
+    this.element.prepend(div);
   }
 
   restartGame() {
@@ -200,5 +154,30 @@ export default class View {
     this.game.board.clearBoard();
     this.game.board.addFigure(defaultChessPosition, colors.WHITE, colors.BLACK);
     this.drawBoard();
+  }
+
+  checkPawnTurn() {
+    if (this.game.finalHorizontalCell) {
+      this.addFigureList();
+      this.game.finalHorizontalCell = null;
+    }
+  }
+
+  checkMate() {
+    if (this.game.checkMateColor) {
+      this.element.prepend(this.createPanelForRestart(`${this.game.checkMateColor.toUpperCase()} WIN!`, true));
+    }
+  }
+
+  checkDraw() {
+    if (this.game.draw) {
+      this.element.prepend(this.createPanelForRestart('DRAW'));
+    }
+  }
+
+  checkStalemate() {
+    if (this.game.stalemate) {
+      this.element.prepend(this.createPanelForRestart('STALEMATE'));
+    }
   }
 }

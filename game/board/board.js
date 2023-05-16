@@ -35,9 +35,7 @@ export default class Board {
           .join(''));
     }
     for (let y = 0; y < position.cellNumberVertical; y++) {
-      if (this.figures.length === position.figureNumberOnePlayer) {
-        color = firstColor;
-      }
+      if (this.figures.length === position.figureNumberOnePlayer) color = firstColor;
       for (let x = 0; x < position.cellNumberHorizontal; x++) {
         if (figureTypes[splitedStartPosition[y][x]] === null) continue;
         const figure = new Figure(color, figureTypes[splitedStartPosition[y][x]]);
@@ -94,71 +92,45 @@ export default class Board {
   }
 
   isEmpty(cell, color) {
-    if (cell.figure?.type === figureTypes.k && cell.figure?.color !== color) {
-      return true;
-    }
-    if (cell.figure) {
-      return false;
-    }
-    return true;
+    if (cell.figure?.type === figureTypes.k && cell.figure?.color !== color) return true;
+    return !cell.figure;
   }
 
   isEnemy(fromCell, targetCell) {
-    if (targetCell.figure) {
-      return fromCell.figure.color !== targetCell.figure.color;
-    }
-    return false;
+    return targetCell.figure && fromCell.figure.color !== targetCell.figure.color;
   }
 
   isEmptyVertical(fromCell, targetCell) {
-    if (fromCell === targetCell) {
-      return false;
-    }
-    if (fromCell.x !== targetCell.x) {
-      return false;
-    }
+    if (fromCell === targetCell) return false;
+    if (fromCell.x !== targetCell.x) return false;
     const min = Math.min(fromCell.y, targetCell.y);
     const max = Math.max(fromCell.y, targetCell.y);
     for (let i = min + 1; i < max; i++) {
-      if (!this.isEmpty(this.getCell(i, fromCell.x), fromCell.figure.color)) {
-        return false;
-      }
+      if (!this.isEmpty(this.getCell(i, fromCell.x), fromCell.figure.color)) return false;
     }
     return true;
   }
 
   isEmptyHorizontal(fromCell, targetCell) {
-    if (fromCell === targetCell) {
-      return false;
-    }
-    if (fromCell.y !== targetCell.y) {
-      return false;
-    }
+    if (fromCell === targetCell) return false;
+    if (fromCell.y !== targetCell.y) return false;
     const min = Math.min(fromCell.x, targetCell.x);
     const max = Math.max(fromCell.x, targetCell.x);
     for (let i = min + 1; i < max; i++) {
-      if (!this.isEmpty(this.getCell(fromCell.y, i), fromCell.figure.color)) {
-        return false;
-      }
+      if (!this.isEmpty(this.getCell(fromCell.y, i), fromCell.figure.color)) return false;
     }
     return true;
   }
 
   isEmptyDiagonal(fromCell, targetCell) {
-    if (fromCell === targetCell) {
-      return false;
-    }
+    if (fromCell === targetCell) return false;
     const absX = Math.abs(fromCell.x - targetCell.x);
     const absY = Math.abs(fromCell.y - targetCell.y);
-    if (absY !== absX) {
-      return false;
-    }
+    if (absY !== absX) return false;
     const dy = targetCell.y > fromCell.y ? 1 : -1;
     const dx = targetCell.x > fromCell.x ? 1 : -1;
     for (let i = 1; i < absY; i++) {
-      if (!this.isEmpty(this.getCell(fromCell.y + i * dy, fromCell.x + i * dx), fromCell.figure.color)) {
-        return false;
-      }
+      if (!this.isEmpty(this.getCell(fromCell.y + i * dy, fromCell.x + i * dx), fromCell.figure.color)) return false;
     }
     return true;
   }
