@@ -11,9 +11,9 @@ This project is chess. It created by using JavaScript, HTML, CSS, node JS.
 * easy integration into your project
 
 ### How to run it on your device?
-> **NOTE:** you need to have node js on your machine
 <hr>
 
+> **NOTE:** you need to have node js on your machine
 1. write in your terminal ```git clone <https or ssh addres>```
 2. open the folder of project and write in terminal ```node server.js```
 3. in your web browser write ```http://localhost:3000/getFile?=game/game.html```
