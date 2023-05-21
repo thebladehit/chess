@@ -1,6 +1,6 @@
 # Chess 
 > **NOTE:** this version of chess can only be used in order to play by two players on one device
-<hr>
+
 This project is chess. It created by using JavaScript, HTML, CSS, node JS.
 
 ### What can this project provide you?
