@@ -5,15 +5,17 @@ import figureTypes from "/getFile?=game/resources/figureTypes.js";
 
 export default class Board {
   constructor(cellNumberHorizontal, cellNumberVertical) {
+    this.cellNumberH = cellNumberHorizontal;
+    this.cellNumberV = cellNumberVertical;
     this.figures = [];
     this.cells = this.createBoard(cellNumberHorizontal, cellNumberVertical);
   }
 
-  createBoard(cellNumberHorizontal, cellNumberVertical) {
+  createBoard() {
     const cells = [];
-    for (let i = 0; i < cellNumberVertical; i++) {
+    for (let i = 0; i < this.cellNumberH; i++) {
       const row = [];
-      for (let j = 0; j < cellNumberHorizontal; j++) {
+      for (let j = 0; j < this.cellNumberV; j++) {
         row.push(new Cell(i, j, (i + j) % 2 === 0 ? colors.WHITE : colors.BLACK))
       }
       cells.push(row);
@@ -70,8 +72,8 @@ export default class Board {
   }
 
   setFinalHorizontal(firstColor) {
-    const white = firstColor === colors.WHITE ? 0 : 7;
-    const black = firstColor === colors.BLACK ? 0 : 7;
+    const white = firstColor === colors.WHITE ? 0 : this.cellNumberH;
+    const black = firstColor === colors.BLACK ? 0 : this.cellNumberH;
     this.finalHorizontalForPawn = { white, black };
   }
 

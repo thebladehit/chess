@@ -219,11 +219,10 @@ export default class Game {
   // get methods
   getFutureAttackedCells(attackedCell, attackingCell) {
     const cells = [];
-    let y = attackingCell.y;
-    let x = attackingCell.x;
+    let { x, y } = attackedCell;
     const dx = attackingCell.x === attackedCell.x ? 0 : attackingCell.x < attackedCell.x ? 1 : -1;
     const dy = attackingCell.y === attackedCell.y ? 0 : attackingCell.y < attackedCell.y ? 1 : -1;
-    while (y >= 0 && y <= 7 && x >= 0 && x <= 7) {
+    while (y >= 0 && y <= this.board.cellNumberV && x >= 0 && x <= this.board.cellNumberH) {
       const cell = this.board.getCell(y, x);
       // if (!cell) break;
       if (!this.board.isEmpty(cell) && cell !== attackedCell && cell !== attackingCell) {
@@ -272,7 +271,7 @@ export default class Game {
     const kingCell = this.board.getMyKingCell(color);
     const dx = targetCell.x > kingCell.x ? 1 : -1;
     let x = kingCell.x + dx;
-    while (x >= 0 && x <= 7) {
+    while (x >= 0 && x <= this.board.cellNumberH) {
       cells.push(this.board.getCell(kingCell.y, x));
       x += dx;
     }
@@ -375,7 +374,9 @@ export default class Game {
     fromCell.figure.isFirstStep = false;
     targetCell.figure = fromCell.figure;
     fromCell.figure = null;
-    if (targetCell.figure.type === figureTypes.p && this.isFinalHorizontal(targetCell)) this.finalHorizontalCell = targetCell;
+    if (targetCell.figure.type === figureTypes.p && this.isFinalHorizontal(targetCell)) {
+      this.finalHorizontalCell = targetCell;
+    }
     this.checkKing(targetCell.figure.color);
     this.checkStalemate(targetCell.figure.color);
     this.checkDraw();
