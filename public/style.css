@@ -2,7 +2,7 @@
     font-family: 'sans-serif';
 }
 
-.container {
+.rootContainer {
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
@@ -52,6 +52,6 @@ th, td{
     border: 1px solid rgba(96, 96, 96, 0.24);
 }
 
-.userZone {
+.table {
     text-align: left;
 }
