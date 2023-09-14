@@ -2,33 +2,13 @@ const token = localStorage.getItem('CHESS_TOKEN');
 let game = null;
 
 (async ()=> {
-  if (!token) {
-    redirect('/enterPage');
-  } else {
-    if (await autoEnter()) {
-      const socket = new WebSocket('ws://localhost:3000');
-      socket.addEventListener('open', () => {
-        socket.send(JSON.stringify({ event: 'authorization', token }));
-      });
-      socket.addEventListener('message', (message) => {
-        message = JSON.parse(message.data);
-        console.log(message);
-        if (message.event === 'gamesList' && !game) {
-          createTrForTable(message.data, socket);
-        } else if (message.event === 'gameCreated' || message.event === 'gameCurrent') {
-          game = message.data;
-          console.log(message.game);
-          waitingForPlayer();
-        } else if (message.event === 'gameJoined') {
-          game = message.data;
-          startChess(socket);
-        }
-      });
-
-    } else {
-      redirect('/enterPage');
-    }
-  }
+  if (!token) return redirect('/enterPage');
+    if (!await autoEnter()) return redirect('/enterPage');
+    const socket = new WebSocket('ws://localhost:3000');
+    socket.addEventListener('open', () => {
+      socket.send(JSON.stringify({ event: 'authorization', token }));
+    });
+    socket.addEventListener('message', message => messageListener(message, socket));
 })()
 
 async function autoEnter() {
@@ -88,14 +68,14 @@ function createTrForTable(games, socket) {
 
 function createGame(socket) {
   socket.send(JSON.stringify({ event: 'gameCreate' }));
-  console.log('send game create'); // console
 }
 
 function waitingForPlayer() {
   const userZone = document.querySelector('.userZone');
   userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
 }
-function startChess(socket) {
+
+function startChess(socket) { // here must draw chess field
   const userZone = document.querySelector('.userZone');
   userZone.innerHTML = 'Game here';
   const btn = document.createElement('button');
@@ -104,4 +84,36 @@ function startChess(socket) {
     socket.send(JSON.stringify({ event: 'sendMove' }));
   })
   userZone.append(btn);
+}
+
+const messageEvents = {
+  gamesList: (message, socket) => {
+    if (game) return;
+    createTrForTable(message.data, socket);
+  },
+  gameJoined: (message, socket) => {
+    game = message.data;
+    startChess(socket);
+  },
+  gameCreated: (message, socket) => {
+    game = message.data;
+    console.log(message.data);
+    waitingForPlayer();
+  },
+  gameCurrent: (message, socket) => {
+    game = message.data;
+    console.log(message.data);
+    waitingForPlayer();
+  }
+};
+
+function messageListener(message, socket) {
+  message = JSON.parse(message.data);
+  console.log(message);
+
+  for (const [eventName, event] of Object.entries(messageEvents)) {
+    if (eventName === message.event) {
+      event(message, socket);
+    }
+  }
 }
