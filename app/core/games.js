@@ -1,3 +1,6 @@
+import { Game as GameChess } from "../../game/gameS.js";
+import Board from "../../game/board/boardS.js";
+
 export default class Games {
   constructor() {
     this.games = new Map();
@@ -45,11 +48,21 @@ class Game {
     this.moves = [];
   }
 
+  initBoard(cellNumberHorizontal, cellNumberVertical, position, firstColor, secondColor) {
+    this.u1Color = firstColor;
+    this.u2Color = secondColor;
+    const board = new Board(cellNumberHorizontal, cellNumberVertical);
+    board.addFigure(position, firstColor, secondColor);
+    this.game = new GameChess(board);
+  }
+
   toPublic() {
     return {
       id: this.id,
       u1: this.u1.name,
       u2: this.u2 === null ? null : this.u2.name,
+      u1Color: this.u1Color,
+      u2Color: this.u2Color
     };
   }
 }

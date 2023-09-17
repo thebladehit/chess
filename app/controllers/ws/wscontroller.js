@@ -1,6 +1,8 @@
 import { USERS } from "#app/stores/users.js";
 import Games from "#app/core/games.js";
 import { WebSocket } from "ws";
+import { colors } from "../../../game/resources/colors.js";
+import { defaultChessPosition } from "../../../game/resources/positionS.js";
 
 const messageEvents = {
   authorization: (message, GAMES, connection) => {
@@ -12,7 +14,7 @@ const messageEvents = {
 
     const currentGame = GAMES.getUserCurrentGame(user);
     if (currentGame) {
-      if (currentGame.u1 && currentGame.u2) return sendMessage(connection, { event: 'gameJoined', data: currentGame.toPublic() });
+      if (currentGame.u1 && currentGame.u2) return sendMessage(connection, { event: 'gameJoined', data: currentGame.toPublic(), hoster: currentGame.u1.connection === connection });
       else return sendMessage(connection, { event: 'gameCurrent', data: currentGame.toPublic() });
     }
     sendMessage(connection, { event: 'gamesList', data: GAMES.getAcceptableGames() });
@@ -26,16 +28,19 @@ const messageEvents = {
       sendMessage(connection, { event: 'gameCreated', data: game.toPublic() });
 
       const data = { event: 'gamesList', data: GAMES.getAcceptableGames() };
-      sendToAll(ws, data);
+      return sendToAll(ws, data);
     }
+    connection.close();
   },
   gameJoin: (message, GAMES, connection, ws) => {
     const user = findUserByConnection(connection);
     if (!user) return connection.close();
     const game = GAMES.games.get(message.data);
     game.u2 = user;
-    sendMessage(connection, { event: 'gameJoined', data: game.toPublic() });
-    sendMessage(game.u1.connection, { event: 'gameJoined', data: game.toPublic() });
+    const colorsForUsers = getColors();
+    game.initBoard(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical, defaultChessPosition, colorsForUsers.firstColor, colorsForUsers.secondColor);
+    sendMessage(connection, { event: 'gameJoined', data: game.toPublic(), hoster: false });
+    sendMessage(game.u1.connection, { event: 'gameJoined', data: game.toPublic(), hoster: true });
 
     const data = { event: 'gamesList', data: GAMES.getAcceptableGames() };
     sendToAll(ws, data);
@@ -62,14 +67,6 @@ function sendMessage(connection, data) {
   return connection.send(JSON.stringify(data));
 }
 
-function closeConnection(connection) {
-  for (const value of USERS.values()) {
-    if (connection === value.connection) {
-      value.connections--;
-    }
-  }
-}
-
 function findUserByConnection(connection) {
   for (const value of USERS.values()) {
     if (value.connection === connection) {
@@ -88,10 +85,18 @@ function messageListener(message, GAMES, connection, ws) {
   }
 }
 
+function getColors() {
+  const rand = Math.random();
+  if (rand < 0.5) {
+    return { firstColor: colors.WHITE, secondColor: colors.BLACK };
+  }
+  return { firstColor: colors.BLACK, secondColor: colors.WHITE };
+}
+
 export default (ws) => {
   const GAMES = new Games();
   ws.on('connection', (connection, request) => {
     connection.on('message', (message) => messageListener(message, GAMES, connection, ws));
-    connection.on('close', () => closeConnection(connection));
+    connection.on('close', () => connection.close());
   });
 }

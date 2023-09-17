@@ -2,6 +2,10 @@
     font-family: 'sans-serif';
 }
 
+body {
+    background-color: rgb(41, 40, 40);
+}
+
 .rootContainer {
     max-width: 1200px;
     margin: 0 auto;

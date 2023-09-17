@@ -7,15 +7,26 @@ import { defaultChessPosition } from "/getFile?=game/resources/position.js";
 const token = localStorage.getItem('CHESS_TOKEN');
 let game = null;
 
-(async ()=> {
-  if (!token) return redirect('/enterPage');
-    if (!await autoEnter()) return redirect('/enterPage');
-    const socket = new WebSocket('ws://localhost:3000');
-    socket.addEventListener('open', () => {
-      socket.send(JSON.stringify({ event: 'authorization', token }));
-    });
-    socket.addEventListener('message', message => messageListener(message, socket));
-})()
+const messageEvents = {
+  gamesList: (message, socket) => {
+    if (game) return;
+    createTrForTable(message.data, socket);
+  },
+  gameJoined: (message, socket) => {
+    game = message.data;
+    startChess(message);
+  },
+  gameCreated: (message, socket) => {
+    game = message.data;
+    console.log(message.data);
+    waitingForPlayer();
+  },
+  gameCurrent: (message, socket) => {
+    game = message.data;
+    console.log(message.data);
+    waitingForPlayer();
+  }
+};
 
 async function autoEnter() {
   const response = await fetch(`/autoEnter`, {
@@ -32,47 +43,15 @@ function redirect(url) {
   location.href = url;
 }
 
-function createGame(socket) {
-  socket.send(JSON.stringify({ event: 'gameCreate' }));
-}
-
-function waitingForPlayer() {
-  const userZone = document.querySelector('.table');
-  userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
-}
-
-function startChess(socket) { // here must draw chess field
-  document.querySelector('h1').remove();
-  document.querySelector('.table').remove();
-  const board = new Board(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical);
-  board.addFigure(defaultChessPosition, colors.WHITE, colors.BLACK);
-  
-  const boardHtml = document.querySelector('.userZone');
-  const game = new Game(board);
-  const view = new View(boardHtml, game);
-  view.drawBoard();
-}
-
-const messageEvents = {
-  gamesList: (message, socket) => {
-    if (game) return;
-    createTrForTable(message.data, socket);
-  },
-  gameJoined: (message, socket) => {
-    game = message.data;
-    startChess(socket);
-  },
-  gameCreated: (message, socket) => {
-    game = message.data;
-    console.log(message.data);
-    waitingForPlayer();
-  },
-  gameCurrent: (message, socket) => {
-    game = message.data;
-    console.log(message.data);
-    waitingForPlayer();
-  }
-};
+(async ()=> {
+  if (!token) return redirect('/enterPage');
+    if (!await autoEnter()) return redirect('/enterPage');
+    const socket = new WebSocket('ws://localhost:3000');
+    socket.addEventListener('open', () => {
+      socket.send(JSON.stringify({ event: 'authorization', token }));
+    });
+    socket.addEventListener('message', message => messageListener(message, socket));
+})()
 
 function messageListener(message, socket) {
   message = JSON.parse(message.data);
@@ -83,6 +62,27 @@ function messageListener(message, socket) {
       event(message, socket);
     }
   }
+}
+
+function createGame(socket) {
+  socket.send(JSON.stringify({ event: 'gameCreate' }));
+}
+
+function waitingForPlayer() {
+  const userZone = document.querySelector('.table');
+  userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
+}
+
+function startChess(message) { // here must draw chess field
+  document.querySelector('h1').remove();
+  document.querySelector('.table').remove();
+  const board = new Board(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical);
+  board.addFigure(defaultChessPosition, message.hoster ? message.data.u1Color : message.data.u2Color, message.hoster ? message.data.u2Color : message.data.u1Color);
+  
+  const boardHtml = document.querySelector('.userZone');
+  const game = new Game(board);
+  const view = new View(boardHtml, game);
+  view.drawBoard();
 }
 
 function createTrForTable(games, socket) {
