@@ -38,21 +38,41 @@ const messageEvents = {
     const game = GAMES.games.get(message.data);
     game.u2 = user;
     const colorsForUsers = getColors();
-    game.initBoard(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical, defaultChessPosition, colorsForUsers.firstColor, colorsForUsers.secondColor);
+    game.u1Color = colorsForUsers.firstColor;
+    game.u2Color = colorsForUsers.secondColor;
     sendMessage(connection, { event: 'gameJoined', data: game.toPublic(), hoster: false });
     sendMessage(game.u1.connection, { event: 'gameJoined', data: game.toPublic(), hoster: true });
 
     const data = { event: 'gamesList', data: GAMES.getAcceptableGames() };
     sendToAll(ws, data);
-
-    console.log(GAMES.games);
   },
   sendMove: (message, GAMES, connection) => {
     const user = findUserByConnection(connection);
     const game = GAMES.getUserCurrentGame(user);
     sendMessage(user.connection === game.u1.connection ? game.u2.connection : game.u1.connection, 'work ahahhaha');
+  },
+  moveFigure: (message, GAMES, connection) => {
+    console.log(message.position.startPos);
+    const user = findUserByConnection(connection);
+    if (!user) return connection.close();
+    const game = GAMES.getUserCurrentGame(user);
+    game.movePlayer = game.movePlayer === colors.WHITE ? colors.BLACK : colors.WHITE;
+    const reverseUser = game.u1.connection === connection ? game.u2.connection : game.u1.connection;
+    console.log(game.u1 === user, game.u2 === user);
+    sendMessage(game.u1.connection, { event: 'movedFigure', data: game.toPublic(), hoster: true, position: game.u1 === user ? message.position : reversePosition(message.position) });
+    sendMessage(game.u2.connection, { event: 'movedFigure', data: game.toPublic(), hoster: false, position: game.u2 === user ? message.position : reversePosition(message.position) });
   }
 };
+
+function reversePosition(position) {
+  const newPosition = Object.assign({}, position);
+  const res = [];
+  const splited = newPosition.startPos.split('/');
+  const reversed = splited.reverse();
+  newPosition.startPos = reversed.join('/');
+  console.log(newPosition);
+  return newPosition;
+}
 
 
 function sendToAll(ws, data) {

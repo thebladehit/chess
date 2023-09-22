@@ -1,11 +1,12 @@
 import Board from '/getFile?=game/board/board.js';
-import View from "/getFile?=game/view.js";
+import View from "/getFile?=game/viewTwoPlayer.js";
 import Game from "/getFile?=game/game.js";
-import { colors } from "/getFile?=game/resources/colors.js";
 import { defaultChessPosition } from "/getFile?=game/resources/position.js";
 
 const token = localStorage.getItem('CHESS_TOKEN');
 let game = null;
+let boardHtml;
+let view;
 
 const messageEvents = {
   gamesList: (message, socket) => {
@@ -14,7 +15,7 @@ const messageEvents = {
   },
   gameJoined: (message, socket) => {
     game = message.data;
-    startChess(message);
+    startChess(message, socket);
   },
   gameCreated: (message, socket) => {
     game = message.data;
@@ -25,6 +26,9 @@ const messageEvents = {
     game = message.data;
     console.log(message.data);
     waitingForPlayer();
+  },
+  movedFigure: (message, socket) => {
+    movedPlayer(message);
   }
 };
 
@@ -55,7 +59,6 @@ function redirect(url) {
 
 function messageListener(message, socket) {
   message = JSON.parse(message.data);
-  console.log(message);
 
   for (const [eventName, event] of Object.entries(messageEvents)) {
     if (eventName === message.event) {
@@ -73,15 +76,30 @@ function waitingForPlayer() {
   userZone.innerHTML = `<div class="alert">Waiting for player...</div>`;
 }
 
-function startChess(message) { // here must draw chess field
+function startChess(message, socket) { // here must draw chess field
+  console.log(message);
   document.querySelector('h1').remove();
   document.querySelector('.table').remove();
   const board = new Board(defaultChessPosition.cellNumberHorizontal, defaultChessPosition.cellNumberVertical);
   board.addFigure(defaultChessPosition, message.hoster ? message.data.u1Color : message.data.u2Color, message.hoster ? message.data.u2Color : message.data.u1Color);
   
-  const boardHtml = document.querySelector('.userZone');
+  boardHtml = document.querySelector('.userZone');
   const game = new Game(board);
-  const view = new View(boardHtml, game);
+  view = new View(boardHtml, game);
+  const movable = message.hoster && message.data.movePlayer === message.data.u1Color || !message.hoster && message.data.movePlayer === message.data.u2Color ? true : false;
+  view.movable = movable;
+  view.socket = socket;
+  view.forColor = message.hoster ? message.data.u1Color : message.data.u2Color;
+  view.drawBoard();
+}
+
+function movedPlayer(message) {
+  console.log(message);
+  view.game.board.clearBoard();
+  view.game.board.addFigure(message.position, message.hoster ? message.data.u1Color : message.data.u2Color, message.hoster ? message.data.u2Color : message.data.u1Color);
+  const movable = message.hoster && message.data.movePlayer === message.data.u1Color || !message.hoster && message.data.movePlayer === message.data.u2Color ? true : false;
+  view.movable = movable;
+  view.game.movePlayer = message.data.movePlayer;
   view.drawBoard();
 }
 

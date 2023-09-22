@@ -1,6 +1,7 @@
 import Figure from "/getFile?=game/figures/figure.js";
 import Cell from "/getFile?=game/board/cell.js";
 import { colors } from "/getFile?=game/resources/colors.js";
+import { defaultChessPosition } from "/getFile?=game/resources/position.js";
 import figureTypes from "/getFile?=game/resources/figureTypes.js";
 
 export default class Board {
@@ -30,6 +31,7 @@ export default class Board {
     let color = secondColor;
     let splitedStartPosition = position.startPos.split('/');
     if (position.forColor !== firstColor) {
+      console.log('here');
       splitedStartPosition = splitedStartPosition
         .map(row => row
           .split('')
@@ -135,5 +137,25 @@ export default class Board {
       if (!this.isEmpty(this.getCell(fromCell.y + i * dy, fromCell.x + i * dx), fromCell.figure.color)) return false;
     }
     return true;
+  }
+
+  convertPositionToString(forColor) { // needed
+    if(!this.cells) return;
+    const res = [];
+    for (const row of this.cells) {
+      const rowPosition = [];
+      for (const cell of row) {
+        for (const [key, value] of Object.entries(figureTypes)) {
+          if (cell.figure?.type == value) {
+            rowPosition.push(key);
+          }
+        }
+      }
+      res.push(rowPosition.join(''));
+    }
+    const postion = defaultChessPosition;
+    postion.startPos = res.join('/');
+    postion.forColor = forColor; 
+    return postion;
   }
 }
